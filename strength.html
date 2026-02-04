@@ -79,7 +79,15 @@
         }
         .goal {
             font-size: 1.05rem;
+            flex: 1;
         }
+        .status {
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        .status.hit { color: #22c55e; }
+        .status.missed { color: #ef4444; }
+        .status.in-progress { color: var(--muted); font-style: italic; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -94,22 +102,27 @@
             <li>
                 <span class="year">2026</span>
                 <span class="goal">Complete a Hyrox in under 1 hour 20min</span>
+                <span class="status in-progress">in progress</span>
             </li>
             <li>
                 <span class="year">2025</span>
                 <span class="goal">900 club</span>
+                <span class="status hit">✓</span>
             </li>
             <li>
                 <span class="year">2024</span>
                 <span class="goal">800 club</span>
+                <span class="status hit">✓</span>
             </li>
             <li>
                 <span class="year">2023</span>
                 <span class="goal">800 club</span>
+                <span class="status missed">✗</span>
             </li>
             <li>
                 <span class="year">2022</span>
                 <span class="goal">70 pushups in a row</span>
+                <span class="status hit">✓</span>
             </li>
         </ul>
     </div>
