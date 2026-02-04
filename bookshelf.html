@@ -119,6 +119,7 @@
         .currently-reading .bookshelf { margin-bottom: 0; }
         .on-the-bookshelf { margin-bottom: 48px; }
         .on-the-bookshelf .bookshelf { margin-bottom: 0; }
+        .read-section { margin-bottom: 16px; }
         .divider {
             height: 1px;
             background: var(--border);
@@ -174,7 +175,7 @@
         </div>
 
         <div class="on-the-bookshelf">
-            <div class="section-title">On the Bookshelf (Haven't Opened)</div>
+            <div class="section-title">On the Shelf</div>
             <div class="bookshelf">
                 <div class="book" data-category="science">
                     <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9781982190415-L.jpg');"></div>
@@ -212,6 +213,10 @@
         </div>
 
         <div class="divider"></div>
+
+        <div class="read-section">
+            <div class="section-title">Read</div>
+        </div>
 
         <div class="bookshelf">
             <!-- 2025 -->
@@ -714,8 +719,10 @@
         });
 
         const bookCountEl = document.querySelector('.book-count span');
-        const mainBookshelf = document.querySelector('.divider + .bookshelf');
-        const allBooks = mainBookshelf.querySelectorAll('.book');
+        const allBooks = document.querySelectorAll('.book');
+        const currentlyReadingSection = document.querySelector('.currently-reading');
+        const onTheShelfSection = document.querySelector('.on-the-bookshelf');
+        const readSection = document.querySelector('.read-section');
 
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -724,15 +731,38 @@
 
                 const filter = btn.dataset.filter;
                 let visibleCount = 0;
+                let currentlyReadingVisible = false;
+                let onTheShelfVisible = false;
+                let readVisible = false;
 
                 allBooks.forEach(book => {
                     if (filter === 'all' || book.dataset.category === filter) {
                         book.classList.remove('hidden');
                         visibleCount++;
+
+                        // Track which sections have visible books
+                        if (book.closest('.currently-reading')) {
+                            currentlyReadingVisible = true;
+                        } else if (book.closest('.on-the-bookshelf')) {
+                            onTheShelfVisible = true;
+                        } else {
+                            readVisible = true;
+                        }
                     } else {
                         book.classList.add('hidden');
                     }
                 });
+
+                // Show/hide section titles based on whether they have visible books
+                if (currentlyReadingSection) {
+                    currentlyReadingSection.style.display = currentlyReadingVisible ? '' : 'none';
+                }
+                if (onTheShelfSection) {
+                    onTheShelfSection.style.display = onTheShelfVisible ? '' : 'none';
+                }
+                if (readSection) {
+                    readSection.style.display = readVisible ? '' : 'none';
+                }
 
                 bookCountEl.textContent = visibleCount;
             });
