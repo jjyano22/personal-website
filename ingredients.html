@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredients - Jason Yanowitz</title>
+    <meta name="description" content="Premium, specialty ingredients that make food better.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --muted: #666;
+            --accent: #c43d2e;
+            --accent-hover: #a83327;
+            --surface: #f5f4f2;
+            --border: #e5e4e2;
+        }
+        ::selection { background: var(--accent); color: white; }
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 0 24px;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 60px 0 100px; }
+        .header { margin-bottom: 48px; }
+        .back-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+        h1 {
+            font-family: 'Newsreader', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+        .subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+            font-style: italic;
+        }
+        .ingredients-list {
+            list-style: none;
+        }
+        .ingredients-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 16px;
+            align-items: baseline;
+        }
+        .ingredients-list li:last-child {
+            border-bottom: none;
+        }
+        .category {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            min-width: 90px;
+            flex-shrink: 0;
+        }
+        .item {
+            font-size: 1rem;
+        }
+        .item a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .item a:hover {
+            color: var(--accent);
+        }
+        .note {
+            color: var(--muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">← Back</a>
+            <h1>Ingredients</h1>
+            <p class="subtitle">Premium, specialty ingredients that make food so much better.</p>
+        </div>
+
+        <ul class="ingredients-list">
+            <li>
+                <span class="category">Soy Sauce</span>
+                <span class="item"><a href="https://www.amazon.com/Yamaroku-Artisan-Japanese-Premium-Gourmet/dp/B0036TFXY0" target="_blank" rel="noopener">Yamaroku Shoyu</a></span>
+            </li>
+            <li>
+                <span class="category">Salt</span>
+                <span class="item"><a href="https://www.amazon.com/Maldon-Natural-Hand-Harvested-Generations-Packaging/dp/B00017028M" target="_blank" rel="noopener">Maldon</a></span>
+            </li>
+            <li>
+                <span class="category">Pepper</span>
+                <span class="item"><a href="https://www.diasporaco.com/products/aranya-black-pepper" target="_blank" rel="noopener">Aranya</a>, <a href="https://reluctanttrading.com/collections/peppercorns" target="_blank" rel="noopener">Reluctant Trading</a></span>
+            </li>
+            <li>
+                <span class="category">Olive Oil</span>
+                <span class="item"><a href="https://www.katzfarm.com/collections/extra-virgin-olive-oil" target="_blank" rel="noopener">Albert Katz</a></span>
+            </li>
+            <li>
+                <span class="category">Vinegar</span>
+                <span class="item"><a href="https://katzfarm.com/collections/vinegar" target="_blank" rel="noopener">Albert Katz</a></span>
+            </li>
+            <li>
+                <span class="category">Balsamic</span>
+                <span class="item"><a href="https://www.amazon.com/Villa-Manodori-Balsamic-Vinegar/dp/B0007UQ73W" target="_blank" rel="noopener">Villa Manodori</a>, <a href="https://www.amazon.com/Lucini-Balsamic-Vinegar-Modena-Riserva/dp/B000WM2WU2" target="_blank" rel="noopener">Lucini</a> <span class="note">for everyday</span></span>
+            </li>
+            <li>
+                <span class="category">Fish Sauce</span>
+                <span class="item"><a href="https://redboatfishsauce.com/" target="_blank" rel="noopener">Red Boat</a></span>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

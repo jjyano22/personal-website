@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookshelf - Jason Yanowitz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --muted: #666;
+            --accent: #c43d2e;
+            --accent-hover: #a83327;
+            --surface: #f5f4f2;
+            --border: #e5e4e2;
+        }
+        ::selection { background: var(--accent); color: white; }
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 0 100px; }
+        .header { margin-bottom: 48px; }
+        .back-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+        h1 {
+            font-family: 'Newsreader', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+        }
+        .filters-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+        .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .book-count {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .book-count span { font-weight: 600; color: var(--text); }
+        .bookshelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; }
+        .book { position: relative; cursor: pointer; transition: transform 0.3s ease; }
+        .book:hover { transform: translateY(-8px) scale(1.02); }
+        .book.hidden { display: none; }
+        .book-cover {
+            aspect-ratio: 2 / 3;
+            border-radius: 4px;
+            background-color: var(--surface);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .book-cover::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.1) 100%);
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        .book-info { margin-top: 10px; }
+        .book-info .title { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 500; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+        .book-info .author { font-size: 0.65rem; color: var(--muted); }
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .currently-reading { margin-bottom: 48px; }
+        .currently-reading .bookshelf { margin-bottom: 0; }
+        .on-the-bookshelf { margin-bottom: 48px; }
+        .on-the-bookshelf .bookshelf { margin-bottom: 0; }
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">← Back</a>
+            <h1>Bookshelf</h1>
+        </div>
+
+        <div class="filters-row">
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="business">Business</button>
+                <button class="filter-btn" data-filter="biography">Biography</button>
+                <button class="filter-btn" data-filter="history">History</button>
+                <button class="filter-btn" data-filter="self-help">Self-Help</button>
+                <button class="filter-btn" data-filter="fiction">Fiction</button>
+                <button class="filter-btn" data-filter="science">Science</button>
+                <button class="filter-btn" data-filter="philosophy">Philosophy</button>
+            </div>
+            <div class="book-count"><span>122</span> books</div>
+        </div>
+
+        <div class="currently-reading">
+            <div class="section-title">Currently Reading</div>
+            <div class="bookshelf">
+                <div class="book" data-category="biography">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9780743225052-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Softwar</div><div class="author">Matthew Symonds</div></div>
+                </div>
+                <div class="book" data-category="fiction">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/178909867X-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Five Decembers</div><div class="author">James Kestrel</div></div>
+                </div>
+                <div class="book" data-category="history">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9780060956653-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Only Yesterday</div><div class="author">Frederick Lewis Allen</div></div>
+                </div>
+                <div class="book" data-category="history">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9780802138293-L.jpg');"></div>
+                    <div class="book-info"><div class="title">The House of Morgan</div><div class="author">Ron Chernow</div></div>
+                </div>
+                <div class="book" data-category="biography">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062456776-L.jpg');"></div>
+                    <div class="book-info"><div class="title">The Gambler</div><div class="author">William C. Rempel</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="on-the-bookshelf">
+            <div class="section-title">On the Bookshelf (Haven't Opened)</div>
+            <div class="bookshelf">
+                <div class="book" data-category="science">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9781982190415-L.jpg');"></div>
+                    <div class="book-info"><div class="title">The Headache</div><div class="author">Elizabeth Loder</div></div>
+                </div>
+                <div class="book" data-category="biography">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9780062998873-L.jpg');"></div>
+                    <div class="book-info"><div class="title">When the Heavens Went on Sale</div><div class="author">Ashlee Vance</div></div>
+                </div>
+                <div class="book" data-category="business">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9781250185969-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Loonshots</div><div class="author">Safi Bahcall</div></div>
+                </div>
+                <div class="book" data-category="fiction">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0140187294-L.jpg');"></div>
+                    <div class="book-info"><div class="title">The House of Mirth</div><div class="author">Edith Wharton</div></div>
+                </div>
+                <div class="book" data-category="science">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9780393334777-L.jpg');"></div>
+                    <div class="book-info"><div class="title">How the Mind Works</div><div class="author">Steven Pinker</div></div>
+                </div>
+                <div class="book" data-category="self-help">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0316167258-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Happiness</div><div class="author">Matthieu Ricard</div></div>
+                </div>
+                <div class="book" data-category="business">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1953953239-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Poor Charlie's Almanack</div><div class="author">Charles T. Munger</div></div>
+                </div>
+                <div class="book" data-category="history">
+                    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/9780143116806-L.jpg');"></div>
+                    <div class="book-info"><div class="title">Lords of Finance</div><div class="author">Liaquat Ahamed</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="bookshelf">
+            <!-- 2025 -->
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1982172002-L.jpg');"></div>
+                <div class="book-info"><div class="title">Chip War</div><div class="author">Chris Miller</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062313290-L.jpg');"></div>
+                <div class="book-info"><div class="title">Who Knew</div><div class="author">David Novak</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0393071235-L.jpg');"></div>
+                <div class="book-info"><div class="title">Original Sin</div><div class="author">Alan Taylor</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0593420322-L.jpg');"></div>
+                <div class="book-info"><div class="title">Trust</div><div class="author">Hernan Diaz</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/147670869X-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Innovators</div><div class="author">Walter Isaacson</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0743277465-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Art of Learning</div><div class="author">Josh Waitzkin</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0063221527-L.jpg');"></div>
+                <div class="book-info"><div class="title">Breaking History</div><div class="author">Jared Kushner</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0877957819-L.jpg');"></div>
+                <div class="book-info"><div class="title">Replay</div><div class="author">Ken Grimwood</div></div>
+            </div>
+
+            <!-- 2024 -->
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1476755744-L.jpg');"></div>
+                <div class="book-info"><div class="title">Red Notice</div><div class="author">Bill Browder</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL48230341M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Astor</div><div class="author">Anderson Cooper</div></div>
+            </div>
+
+            <!-- 2023 -->
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0787960756-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Five Dysfunctions of a Team</div><div class="author">Patrick Lencioni</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0765382032-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Three-Body Problem</div><div class="author">Liu Cixin</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062301233-L.jpg');"></div>
+                <div class="book-info"><div class="title">Elon Musk</div><div class="author">Ashlee Vance</div></div>
+            </div>
+
+            <!-- 2022 -->
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0767913736-L.jpg');"></div>
+                <div class="book-info"><div class="title">The River of Doubt</div><div class="author">Candice Millard</div></div>
+            </div>
+
+            <!-- 2021 -->
+            <div class="book" data-category="philosophy">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL9863622M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Meditations</div><div class="author">Marcus Aurelius</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0465062881-L.jpg');"></div>
+                <div class="book-info"><div class="title">Endurance</div><div class="author">Alfred Lansing</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0593135202-L.jpg');"></div>
+                <div class="book-info"><div class="title">Project Hail Mary</div><div class="author">Andy Weir</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0679762884-L.jpg');"></div>
+                <div class="book-info"><div class="title">High Output Management</div><div class="author">Andrew Grove</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0553380958-L.jpg');"></div>
+                <div class="book-info"><div class="title">Snow Crash</div><div class="author">Neal Stephenson</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://books.google.com/books/content?id=9mxSDwAAQBAJ&printsec=frontcover&img=1&zoom=3');"></div>
+                <div class="book-info"><div class="title">How the Internet Happened</div><div class="author">Brian McCullough</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL28401755M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Reboot</div><div class="author">Jerry Colonna</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0312577222-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Nightingale</div><div class="author">Kristin Hannah</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0857197681-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Psychology of Money</div><div class="author">Morgan Housel</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL32814132M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Drudge Revolution</div><div class="author">Matthew Lysiak</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0143110632-L.jpg');"></div>
+                <div class="book-info"><div class="title">Grant</div><div class="author">Ron Chernow</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0307476073-L.jpg');"></div>
+                <div class="book-info"><div class="title">Wild</div><div class="author">Cheryl Strayed</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0446581895-L.jpg');"></div>
+                <div class="book-info"><div class="title">Call Me Ted</div><div class="author">Ted Turner</div></div>
+            </div>
+
+            <!-- 2020 -->
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL32920891M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Trust Me, I'm Lying</div><div class="author">Ryan Holiday</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL38814442M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Messy Middle</div><div class="author">Scott Belsky</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0393652246-L.jpg');"></div>
+                <div class="book-info"><div class="title">Super Pumped</div><div class="author">Mike Isaac</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0399592091-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Ride of a Lifetime</div><div class="author">Robert Iger</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1400032059-L.jpg');"></div>
+                <div class="book-info"><div class="title">1491</div><div class="author">Charles C. Mann</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0812969529-L.jpg');"></div>
+                <div class="book-info"><div class="title">Under and Alone</div><div class="author">William Queen</div></div>
+            </div>
+            <div class="book" data-category="science">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0393316041-L.jpg');"></div>
+                <div class="book-info"><div class="title">Surely You're Joking, Mr. Feynman!</div><div class="author">Richard Feynman</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0385483821-L.jpg');"></div>
+                <div class="book-info"><div class="title">Only the Paranoid Survive</div><div class="author">Andrew Grove</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0743270754-L.jpg');"></div>
+                <div class="book-info"><div class="title">Team of Rivals</div><div class="author">Doris Kearns Goodwin</div></div>
+            </div>
+            <div class="book" data-category="science">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0735224153-L.jpg');"></div>
+                <div class="book-info"><div class="title">How to Change Your Mind</div><div class="author">Michael Pollan</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL28653367M-L.jpg');"></div>
+                <div class="book-info"><div class="title">What You Do Is Who You Are</div><div class="author">Ben Horowitz</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0593135288-L.jpg');"></div>
+                <div class="book-info"><div class="title">Humor, Seriously</div><div class="author">Jennifer Aaker</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1451662440-L.jpg');"></div>
+                <div class="book-info"><div class="title">Total Recall</div><div class="author">Arnold Schwarzenegger</div></div>
+            </div>
+
+            <!-- 2019 -->
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0735219095-L.jpg');"></div>
+                <div class="book-info"><div class="title">Where the Crawdads Sing</div><div class="author">Delia Owens</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27407912M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Stealing Fire</div><div class="author">Steven Kotler</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/194883653X-L.jpg');"></div>
+                <div class="book-info"><div class="title">Indistractable</div><div class="author">Nir Eyal</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27384948M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Managing Oneself</div><div class="author">Peter Drucker</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1591843472-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Score Takes Care of Itself</div><div class="author">Bill Walsh</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1594631905-L.jpg');"></div>
+                <div class="book-info"><div class="title">To Sell is Human</div><div class="author">Daniel Pink</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27191514M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Oxygen Advantage</div><div class="author">Patrick McKeown</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL26393338M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Radical Candor</div><div class="author">Kim Scott</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0525536221-L.jpg');"></div>
+                <div class="book-info"><div class="title">Measure What Matters</div><div class="author">John Doerr</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0316219266-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Everything Store</div><div class="author">Brad Stone</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL33342591M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Top of Mind</div><div class="author">John Hall</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062839268-L.jpg');"></div>
+                <div class="book-info"><div class="title">Trillion Dollar Coach</div><div class="author">Eric Schmidt</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL28254610M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Dichotomy of Leadership</div><div class="author">Jocko Willink</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0143116177-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Ascent of Money</div><div class="author">Niall Ferguson</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1501124021-L.jpg');"></div>
+                <div class="book-info"><div class="title">Principles</div><div class="author">Ray Dalio</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1591844355-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Challenger Sale</div><div class="author">Matthew Dixon</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/152473165X-L.jpg');"></div>
+                <div class="book-info"><div class="title">Bad Blood</div><div class="author">John Carreyrou</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL34549135M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Genius Foods</div><div class="author">Max Lugavere</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0525429565-L.jpg');"></div>
+                <div class="book-info"><div class="title">Originals</div><div class="author">Adam Grant</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1524761419-L.jpg');"></div>
+                <div class="book-info"><div class="title">Blitzscaling</div><div class="author">Reid Hoffman</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1119166713-L.jpg');"></div>
+                <div class="book-info"><div class="title">From Impossible to Inevitable</div><div class="author">Aaron Ross</div></div>
+            </div>
+            <div class="book" data-category="philosophy">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0525512179-L.jpg');"></div>
+                <div class="book-info"><div class="title">21 Lessons for the 21st Century</div><div class="author">Yuval Noah Harari</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0399590501-L.jpg');"></div>
+                <div class="book-info"><div class="title">Educated</div><div class="author">Tara Westover</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0812975219-L.jpg');"></div>
+                <div class="book-info"><div class="title">Fooled by Randomness</div><div class="author">Nassim Taleb</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27380243M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Win Bigly</div><div class="author">Scott Adams</div></div>
+            </div>
+
+            <!-- 2018 -->
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062273205-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Hard Thing About Hard Things</div><div class="author">Ben Horowitz</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0470521163-L.jpg');"></div>
+                <div class="book-info"><div class="title">Behind the Cloud</div><div class="author">Marc Benioff</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0143118447-L.jpg');"></div>
+                <div class="book-info"><div class="title">Difficult Conversations</div><div class="author">Douglas Stone</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062316095-L.jpg');"></div>
+                <div class="book-info"><div class="title">Sapiens</div><div class="author">Yuval Noah Harari</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://books.google.com/books/content?id=kTYlDQAAQBAJ&printsec=frontcover&img=1&zoom=3');"></div>
+                <div class="book-info"><div class="title">The Only Sales Guide You'll Ever Need</div><div class="author">Anthony Iannarino</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062407805-L.jpg');"></div>
+                <div class="book-info"><div class="title">Never Split the Difference</div><div class="author">Chris Voss</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL3690676M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Benjamin Franklin: An American Life</div><div class="author">Walter Isaacson</div></div>
+            </div>
+            <div class="book" data-category="science">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0199678111-L.jpg');"></div>
+                <div class="book-info"><div class="title">Superintelligence</div><div class="author">Nick Bostrom</div></div>
+            </div>
+
+            <!-- 2017 -->
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL26842952M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Slight Edge</div><div class="author">Jeff Olson</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1473613809-L.jpg');"></div>
+                <div class="book-info"><div class="title">Black Box Thinking</div><div class="author">Matthew Syed</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1501135910-L.jpg');"></div>
+                <div class="book-info"><div class="title">Shoe Dog</div><div class="author">Phil Knight</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0062315005-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Alchemist</div><div class="author">Paulo Coelho</div></div>
+            </div>
+            <div class="book" data-category="science">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27194292M-L.jpg');"></div>
+                <div class="book-info"><div class="title">What to Think About Machines That Think</div><div class="author">John Brockman</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0374273537-L.jpg');"></div>
+                <div class="book-info"><div class="title">Thank You for Being Late</div><div class="author">Thomas Friedman</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0743226712-L.jpg');"></div>
+                <div class="book-info"><div class="title">1776</div><div class="author">David McCullough</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1623367085-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Code of the Extraordinary Mind</div><div class="author">Vishen Lakhiani</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0804139296-L.jpg');"></div>
+                <div class="book-info"><div class="title">Zero to One</div><div class="author">Peter Thiel</div></div>
+            </div>
+
+            <!-- 2016 -->
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1119259754-L.jpg');"></div>
+                <div class="book-info"><div class="title">Venture Deals</div><div class="author">Brad Feld</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0143125478-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Boys in the Boat</div><div class="author">Daniel James Brown</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1501111108-L.jpg');"></div>
+                <div class="book-info"><div class="title">Grit</div><div class="author">Angela Duckworth</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1455586692-L.jpg');"></div>
+                <div class="book-info"><div class="title">Deep Work</div><div class="author">Cal Newport</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1476754489-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Like Switch</div><div class="author">Jack Schafer</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL24023021M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Mastering the VC Game</div><div class="author">Jeffrey Bussgang</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0812979370-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Social Animal</div><div class="author">David Brooks</div></div>
+            </div>
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0553562835-L.jpg');"></div>
+                <div class="book-info"><div class="title">Sam Walton: Made in America</div><div class="author">Sam Walton</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL23962610M-L.jpg');"></div>
+                <div class="book-info"><div class="title">When I Stop Talking, You'll Know I'm Dead</div><div class="author">Jerry Weintraub</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1137279648-L.jpg');"></div>
+                <div class="book-info"><div class="title">Dead Companies Walking</div><div class="author">Scott Fearon</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0802144845-L.jpg');"></div>
+                <div class="book-info"><div class="title">Industrial Revolutionaries</div><div class="author">Gavin Weightman</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1885167776-L.jpg');"></div>
+                <div class="book-info"><div class="title">The One Thing</div><div class="author">Gary Keller</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0451524934-L.jpg');"></div>
+                <div class="book-info"><div class="title">1984</div><div class="author">George Orwell</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/081298160X-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Power of Habit</div><div class="author">Charles Duhigg</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1628654643-L.jpg');"></div>
+                <div class="book-info"><div class="title">Building an Empire</div><div class="author">Brian Carruthers</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0671891634-L.jpg');"></div>
+                <div class="book-info"><div class="title">Beating the Street</div><div class="author">Peter Lynch</div></div>
+            </div>
+            <div class="book" data-category="science">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0316010669-L.jpg');"></div>
+                <div class="book-info"><div class="title">Blink</div><div class="author">Malcolm Gladwell</div></div>
+            </div>
+
+            <!-- 2014 -->
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1612680194-L.jpg');"></div>
+                <div class="book-info"><div class="title">Rich Dad Poor Dad</div><div class="author">Robert Kiyosaki</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/1585424331-L.jpg');"></div>
+                <div class="book-info"><div class="title">Think and Grow Rich</div><div class="author">Napoleon Hill</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0393328511-L.jpg');"></div>
+                <div class="book-info"><div class="title">When Affirmative Action Was White</div><div class="author">Ira Katznelson</div></div>
+            </div>
+            <div class="book" data-category="self-help">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0671027034-L.jpg');"></div>
+                <div class="book-info"><div class="title">How to Win Friends & Influence People</div><div class="author">Dale Carnegie</div></div>
+            </div>
+            <div class="book" data-category="history">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27512321M-L.jpg');"></div>
+                <div class="book-info"><div class="title">For Discrimination</div><div class="author">Randall Kennedy</div></div>
+            </div>
+
+            <!-- 2013 -->
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL37054790M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Four Year Career</div><div class="author">Richard Brooke</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL27202773M-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Business of the 21st Century</div><div class="author">Robert Kiyosaki</div></div>
+            </div>
+            <div class="book" data-category="business">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/olid/OL25652739M-L.jpg');"></div>
+                <div class="book-info"><div class="title">Go Pro</div><div class="author">Eric Worre</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0060935464-L.jpg');"></div>
+                <div class="book-info"><div class="title">To Kill a Mockingbird</div><div class="author">Harper Lee</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0743273567-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Great Gatsby</div><div class="author">F. Scott Fitzgerald</div></div>
+            </div>
+
+            <!-- 2012 -->
+            <div class="book" data-category="biography">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0374531269-L.jpg');"></div>
+                <div class="book-info"><div class="title">A Long Way Gone</div><div class="author">Ishmael Beah</div></div>
+            </div>
+
+            <!-- 2011 -->
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0743297334-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Sun Also Rises</div><div class="author">Ernest Hemingway</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0399501487-L.jpg');"></div>
+                <div class="book-info"><div class="title">Lord of the Flies</div><div class="author">William Golding</div></div>
+            </div>
+            <div class="book" data-category="fiction">
+                <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/isbn/0375842209-L.jpg');"></div>
+                <div class="book-info"><div class="title">The Book Thief</div><div class="author">Markus Zusak</div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Convert background-image divs to img tags with lazy loading
+        document.querySelectorAll('.book-cover').forEach(cover => {
+            const style = cover.getAttribute('style');
+            if (style) {
+                const match = style.match(/url\(['"]?([^'"]+)['"]?\)/);
+                if (match) {
+                    const img = document.createElement('img');
+                    img.src = match[1];
+                    img.loading = 'lazy';
+                    img.alt = '';
+                    cover.removeAttribute('style');
+                    cover.appendChild(img);
+                }
+            }
+        });
+
+        const bookCountEl = document.querySelector('.book-count span');
+        const mainBookshelf = document.querySelector('.divider + .bookshelf');
+        const allBooks = mainBookshelf.querySelectorAll('.book');
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                let visibleCount = 0;
+
+                allBooks.forEach(book => {
+                    if (filter === 'all' || book.dataset.category === filter) {
+                        book.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        book.classList.add('hidden');
+                    }
+                });
+
+                bookCountEl.textContent = visibleCount;
+            });
+        });
+    </script>
+</body>
+</html>

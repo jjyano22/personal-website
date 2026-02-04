@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio - Jason Yanowitz</title>
+    <meta name="description" content="Jason Yanowitz is the co-founder of Blockworks.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --muted: #666;
+            --accent: #c43d2e;
+            --accent-hover: #a83327;
+        }
+        ::selection { background: var(--accent); color: white; }
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 0 24px;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 60px 0 100px; }
+        .header { margin-bottom: 48px; }
+        .back-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+        h1 {
+            font-family: 'Newsreader', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+        }
+        .bio-text {
+            font-size: 1.1rem;
+            margin-bottom: 48px;
+        }
+        .bio-text a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .bio-text a:hover { text-decoration: underline; }
+        .links {
+            display: flex;
+            gap: 24px;
+        }
+        .links a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .links a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">← Back</a>
+            <h1>Bio</h1>
+        </div>
+
+        <p class="bio-text">
+            Jason Yanowitz is the co-founder of <a href="https://blockworks.co" target="_blank" rel="noopener">Blockworks</a>, a media, events, and data company that delivers crypto information to millions of investors.
+        </p>
+
+        <div class="links">
+            <a href="https://twitter.com/JasonYanowitz" target="_blank" rel="noopener">Twitter</a>
+            <a href="https://www.linkedin.com/in/yanowitzjason/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+    </div>
+</body>
+</html>

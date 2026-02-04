@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investments - Jason Yanowitz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --muted: #666;
+            --accent: #c43d2e;
+            --border: #e5e5e5;
+            --active: #22c55e;
+            --exited: #3b82f6;
+            --shutdown: #9ca3af;
+        }
+
+        ::selection { background: var(--accent); color: white; }
+
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 60px 0 100px; }
+
+        .header { margin-bottom: 32px; }
+
+        .back-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--text); }
+
+        h1 {
+            font-family: 'Newsreader', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .subtitle { color: var(--muted); font-size: 1rem; }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 24px;
+            margin: 24px 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .stat-dot.active { background: var(--active); }
+        .stat-dot.exited { background: var(--exited); }
+        .stat-dot.shutdown { background: var(--shutdown); }
+
+        .stat-count { font-weight: 600; }
+        .stat-text { color: var(--muted); }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover { border-color: var(--text); color: var(--text); }
+        .filter-btn.active { background: var(--text); border-color: var(--text); color: white; }
+
+        /* Investment List */
+        .investments-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .investment-item {
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .investment-item:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .investment-item.hidden { display: none; }
+
+        .investment-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .investment-header:hover {
+            padding-left: 4px;
+        }
+
+        .investment-header:hover .investment-name {
+            color: var(--accent);
+        }
+
+        .investment-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #f5f5f5;
+            flex-shrink: 0;
+        }
+
+        .investment-logo-placeholder {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.6rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.active { background: var(--active); }
+        .status-dot.exited { background: var(--exited); }
+        .status-dot.shutdown { background: var(--shutdown); }
+
+        .investment-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.15s;
+            flex: 1;
+        }
+
+        .investment-item.shutdown .investment-name {
+            color: var(--muted);
+        }
+
+        .status-note {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        .status-note.exited { color: var(--exited); }
+
+        .investment-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease, padding 0.25s ease;
+            padding: 0 0 0 42px;
+        }
+
+        .investment-item.expanded .investment-details {
+            max-height: 80px;
+            padding: 0 0 12px 42px;
+        }
+
+        .investment-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .investment-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .investment-link:hover { text-decoration: underline; }
+
+        .investment-link svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        @media (max-width: 640px) {
+            .stats-row {
+                gap: 16px;
+            }
+
+            .investment-name {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-link">← Back</a>
+            <h1>Angel Investments</h1>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-count">66</span>
+                <span class="stat-text">Total</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-dot active"></div>
+                <span class="stat-count">56</span>
+                <span class="stat-text">Active</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-dot exited"></div>
+                <span class="stat-count">3</span>
+                <span class="stat-text">Exited</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-dot shutdown"></div>
+                <span class="stat-count">7</span>
+                <span class="stat-text">Shut Down</span>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="exited">Exited</button>
+            <button class="filter-btn" data-filter="shutdown">Shut Down</button>
+        </div>
+
+        <div class="investments-list">
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=3fmutual.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">3F</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">3F</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Insurance protocol</p>
+                    <a href="https://www.3fmutual.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=alliance.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Alliance DAO</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Leading Web3 accelerator</p>
+                    <a href="https://alliance.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=allora.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Allora</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Self-improving AI network</p>
+                    <a href="https://allora.network" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=andrena.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Andrena</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Fixed wireless internet provider</p>
+                    <a href="https://andrena.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=arch.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Arch Network</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Bitcoin-native programmable layer</p>
+                    <a href="https://arch.network" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=assetreality.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Asset Reality</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Seized asset management platform</p>
+                    <a href="https://assetreality.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=astria.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Astria</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Shared sequencing layer</p>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=binocular.co&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">A</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Axel / Binocular</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">DeFi analytics platform</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=beehiiv.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">B</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Beehiiv</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">The best newsletter platform</p>
+                    <a href="https://www.beehiiv.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=blueprintfi.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">B</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Blueprint Finance</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">DeFi infrastructure</p>
+                    <a href="https://blueprintfi.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=cap.so&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">C</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Cap Labs</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Stablecoin yield protocol</p>
+                    <a href="https://cap.so" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=dflow.net&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">D</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">DFlow</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Decentralized order flow</p>
+                    <a href="https://dflow.net" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=getdoormat.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">D</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Doormat</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Crypto onboarding platform</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=doublezero.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">D</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">DoubleZero</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Next-gen blockchain infrastructure</p>
+                    <a href="https://doublezero.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=eco.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">E</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Eco</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Stablecoin infrastructure and routing</p>
+                    <a href="https://eco.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=ejara.io&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">E</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Ejara</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Financial access for Africa</p>
+                    <a href="https://www.ejara.io" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=ellipsislabs.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">E</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Ellipsis</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Liquidity backbone of Solana</p>
+                    <a href="https://ellipsislabs.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=fantasy.top&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">F</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Fantasy</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Social trading card game</p>
+                    <a href="https://fantasy.top" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=fluent.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">F</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Fluent</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Wasm-based L2 on Ethereum</p>
+                    <a href="https://fluent.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=friktion.fi&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">F</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Friktion</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">DeFi options vaults on Solana</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=galleon.io&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">G</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Galleon</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Operating system for real estate investors</p>
+                    <a href="https://galleon.io" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=gamergains.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">G</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">GamerGains</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Earn crypto playing games</p>
+                    <a href="https://gamergains.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=gardenintel.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">G</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Garden</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">AI-powered patent intelligence</p>
+                    <a href="https://www.gardenintel.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item exited" data-status="exited">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=geneva.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">G</div>
+                    <div class="status-dot exited"></div>
+                    <div class="investment-name">Geneva</div>
+                    <span class="status-note exited">Exited to Bumble</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Group chat for communities</p>
+                    <a href="https://geneva.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=helius.dev&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">H</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Helius</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Solana developer platform</p>
+                    <a href="https://helius.dev" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=invent.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">I</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Invent Network</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Decentralized patent infrastructure</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=inversionspace.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">I</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Inversion</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Re-entry capsules for space</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=jito.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">J</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Jito</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">MEV infrastructure for Solana</p>
+                    <a href="https://www.jito.network" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item exited" data-status="exited">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=kado.money&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">K</div>
+                    <div class="status-dot exited"></div>
+                    <div class="investment-name">Kado</div>
+                    <span class="status-note exited">Exited to Swapped.com</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Crypto on/off ramp</p>
+                    <a href="https://www.kado.money" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=kinto.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">K</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Kinto</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">First KYC'ed L2 on Ethereum</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=kintsu.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">K</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Kintsu</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Liquid staking on Monad</p>
+                    <a href="https://kintsu.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=lootbase.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">L</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Lootbase</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Leveraged crypto trading app</p>
+                    <a href="https://lootbase.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=meow.co&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">M</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Meow</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Better cash returns for business</p>
+                    <a href="https://meow.co" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=monad.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">M</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Monad</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">High-performance EVM L1</p>
+                    <a href="https://monad.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=movementlabs.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">M</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Movement Labs</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Move-based infrastructure</p>
+                    <a href="https://movementlabs.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=juice.finance&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">OJ</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Omega + Juice</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">DeFi protocols</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=opinions.fun&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">O</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Opinions.fun</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Prediction market platform</p>
+                    <a href="https://opinions.fun" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=outersignal.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">OS</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">OuterSignal</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Private liquidity network</p>
+                    <a href="https://www.outersignal.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=pear.garden&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">P</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Pear Protocol</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Decentralized pairs trading</p>
+                    <a href="https://www.pear.garden" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=pleasr.house&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">P</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">PleasrDAO</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Collector DAO for digital art</p>
+                    <a href="https://pleasr.house" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=olive.cash&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">P</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Polysynth (Olive)</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Decentralized perpetuals trading</p>
+                </div>
+            </div>
+
+            <div class="investment-item exited" data-status="exited">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=rio.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">R</div>
+                    <div class="status-dot exited"></div>
+                    <div class="investment-name">Rio</div>
+                    <span class="status-note exited">Exited to EigenLayer</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Liquid restaking network</p>
+                    <a href="https://www.rio.network" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=river.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">R</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">River</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Best platform to buy Bitcoin</p>
+                    <a href="https://river.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=romeprotocol.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">R</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Rome</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Shared sequencers for Solana</p>
+                    <a href="https://www.romeprotocol.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item shutdown" data-status="shutdown">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=ryzecrypto.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">R</div>
+                    <div class="status-dot shutdown"></div>
+                    <div class="investment-name">Ryze</div>
+                    <span class="status-note">Shut down</span>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Bitcoin-native neobank</p>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=skytrade.finance&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">S</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">SkyTrade</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Air rights marketplace</p>
+                    <a href="https://skytrade.finance" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=spacecoin.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">S</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Spacecoin</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Decentralized space network</p>
+                    <a href="https://spacecoin.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=takeultra.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">U</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Ultra</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Nicotine-free focus pouches</p>
+                    <a href="https://takeultra.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=uraniumdigital.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">U</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Uranium Digital</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Uranium commodity exchange</p>
+                    <a href="https://www.uraniumdigital.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=valiant.trade&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="investment-logo-placeholder" style="display:none">V</div>
+                    <div class="status-dot active"></div>
+                    <div class="investment-name">Valiant</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Fastest spot DEX in crypto</p>
+                    <a href="https://valiant.trade" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                document.querySelectorAll('.investment-item').forEach(item => {
+                    if (filter === 'all' || item.dataset.status === filter) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Expand/collapse on click
+        document.querySelectorAll('.investment-header').forEach(header => {
+            header.addEventListener('click', (e) => {
+                const item = header.parentElement;
+                const wasExpanded = item.classList.contains('expanded');
+
+                // Close all other items
+                document.querySelectorAll('.investment-item').forEach(i => {
+                    i.classList.remove('expanded');
+                });
+
+                // Toggle clicked item
+                if (!wasExpanded) {
+                    item.classList.add('expanded');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

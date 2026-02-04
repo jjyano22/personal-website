@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jason Yanowitz</title>
+    <meta name="description" content="Co-founder of Blockworks. Brooklyn, NY.">
+    <meta property="og:title" content="Jason Yanowitz">
+    <meta property="og:description" content="Co-founder of Blockworks. Brooklyn, NY.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@JasonYanowitz">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --muted: #666;
+            --accent: #c43d2e;
+            --accent-hover: #a83327;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: white;
+        }
+
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0 24px;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 120px 0;
+        }
+
+        h1 {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .location {
+            color: var(--muted);
+            font-size: 0.95rem;
+            font-style: italic;
+            margin-bottom: 32px;
+        }
+
+        .bio {
+            margin-bottom: 48px;
+            font-size: 1.05rem;
+        }
+
+        .bio a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .bio a:hover {
+            text-decoration: underline;
+        }
+
+        nav {
+            margin-bottom: 48px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 24px;
+        }
+
+        nav a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        .social {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .social a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .social a:hover {
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jason Yanowitz</h1>
+        <div class="location">Brooklyn, NY</div>
+
+        <p class="bio">
+            Co-founder of <a href="https://blockworks.co" target="_blank" rel="noopener">Blockworks</a>.
+            Founded in 2017, we're a software and data platform that helps onchain companies scale.
+        </p>
+
+        <nav>
+            <ul>
+                <li><a href="bookshelf.html">Bookshelf</a></li>
+                <li><a href="investments.html">Investments</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="strength.html">Strength</a></li>
+            </ul>
+        </nav>
+
+        <div class="social">
+            <a href="https://twitter.com/JasonYanowitz" target="_blank" rel="noopener">Twitter</a>
+            <a href="https://linkedin.com/in/yanowitzjason" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="bio.html">Bio</a>
+            <a href="https://www.chess.com/member/btcjason" target="_blank" rel="noopener">Chess</a>
+            <a href="https://blockworks.co/podcast/empire" target="_blank" rel="noopener">Podcast</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jason Yanowitz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fafaf9;
+            --text: #1a1a1a;
+            --muted: #737373;
+            --accent: #dc2626;
+            --border: #e5e5e5;
+        }
+
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 0 24px;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 80px 0 120px;
+        }
+
+        /* Header with live age */
+        header {
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            margin-bottom: 4px;
+        }
+
+        .location {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .age {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+
+        a {
+            color: var(--text);
+            text-decoration-color: var(--border);
+            text-underline-offset: 3px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        a:hover {
+            text-decoration-color: var(--accent);
+        }
+
+        /* The weird trick: breathing bookshelf */
+        .bookshelf {
+            margin-top: 40px;
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+            height: 180px;
+            padding: 20px;
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.02) 100%);
+            border-radius: 8px;
+            cursor: default;
+        }
+
+        .book {
+            width: 28px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .book:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 4px 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Breathing animation - staggered */
+        .book {
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        .book:nth-child(1) { animation-delay: 0s; }
+        .book:nth-child(2) { animation-delay: 0.3s; }
+        .book:nth-child(3) { animation-delay: 0.6s; }
+        .book:nth-child(4) { animation-delay: 0.9s; }
+        .book:nth-child(5) { animation-delay: 1.2s; }
+        .book:nth-child(6) { animation-delay: 1.5s; }
+        .book:nth-child(7) { animation-delay: 1.8s; }
+        .book:nth-child(8) { animation-delay: 2.1s; }
+        .book:nth-child(9) { animation-delay: 2.4s; }
+        .book:nth-child(10) { animation-delay: 2.7s; }
+        .book:nth-child(11) { animation-delay: 3.0s; }
+        .book:nth-child(12) { animation-delay: 3.3s; }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateY(0) scaleY(1); }
+            50% { transform: translateY(-2px) scaleY(1.01); }
+        }
+
+        .book:hover {
+            animation-play-state: paused;
+        }
+
+        /* Book tooltip */
+        .book::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            background: var(--text);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .book:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-12px);
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 48px 0;
+        }
+
+        /* Links section */
+        .links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .links a:hover {
+            color: var(--text);
+        }
+
+        /* Footer with time */
+        footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .brooklyn-time {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+        }
+
+        /* Chess puzzle - the other weird trick */
+        .chess-puzzle {
+            margin-top: 32px;
+            padding: 20px;
+            background: #f5f5f4;
+            border-radius: 8px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .mini-board {
+            width: 120px;
+            height: 120px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .mini-board span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .mini-board span.light { background: #f0d9b5; }
+        .mini-board span.dark { background: #b58863; }
+
+        .puzzle-info {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .puzzle-info h4 {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .puzzle-info p {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .puzzle-info a {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .puzzle-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* Investments list */
+        .investments {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+            margin-top: 12px;
+        }
+
+        .investments a {
+            font-size: 0.95rem;
+        }
+
+        /* Currently reading */
+        .currently-reading {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f5f5f4;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .current-book-cover {
+            width: 45px;
+            height: 68px;
+            background: linear-gradient(135deg, #1e3a5f, #0d1f33);
+            border-radius: 3px;
+            flex-shrink: 0;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .current-book-info {
+            flex: 1;
+        }
+
+        .current-book-info h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .current-book-info .author {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 67%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .progress-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Subtle page tilt - the zhexi touch */
+        /* Uncomment to enable:
+        .container {
+            transform: rotate(-0.5deg);
+        }
+        */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Jason Yanowitz</h1>
+            <div class="location">Brooklyn, NY</div>
+            <div class="age"><span id="age"></span> years old</div>
+        </header>
+
+        <section>
+            <p>Co-founder of <a href="https://blockworks.co" target="_blank">Blockworks</a>, a media and data company focused on crypto. We're 75+ people building things that help investors understand this space.</p>
+            <p>I host <a href="#">Empire</a>, a podcast about crypto, markets, and building companies.</p>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-title">Angel Investments</div>
+            <div class="investments">
+                <a href="#">Jito</a>
+                <a href="#">Beehiiv</a>
+                <a href="#">Meow</a>
+                <a href="#">AllianceDAO</a>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-title">Currently Reading</div>
+            <div class="currently-reading">
+                <div class="current-book-cover"></div>
+                <div class="current-book-info">
+                    <h4>The Power Broker</h4>
+                    <div class="author">Robert Caro</div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-text">67% complete</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">Books I've Loved</div>
+            <div class="bookshelf">
+                <div class="book" style="height: 140px; background: linear-gradient(180deg, #c0392b, #922b21);" data-title="The Power Broker"></div>
+                <div class="book" style="height: 120px; background: linear-gradient(180deg, #2980b9, #1a5276);" data-title="Shoe Dog"></div>
+                <div class="book" style="height: 130px; background: linear-gradient(180deg, #27ae60, #1e8449);" data-title="The Ride of a Lifetime"></div>
+                <div class="book" style="height: 115px; background: linear-gradient(180deg, #8e44ad, #6c3483);" data-title="Elon Musk"></div>
+                <div class="book" style="height: 145px; background: linear-gradient(180deg, #d35400, #a04000);" data-title="Titan"></div>
+                <div class="book" style="height: 125px; background: linear-gradient(180deg, #16a085, #0e6655);" data-title="The Everything Store"></div>
+                <div class="book" style="height: 135px; background: linear-gradient(180deg, #2c3e50, #1a252f);" data-title="Steve Jobs"></div>
+                <div class="book" style="height: 118px; background: linear-gradient(180deg, #e74c3c, #c0392b);" data-title="Zero to One"></div>
+                <div class="book" style="height: 142px; background: linear-gradient(180deg, #3498db, #2471a3);" data-title="The Hard Thing"></div>
+                <div class="book" style="height: 128px; background: linear-gradient(180deg, #f39c12, #d68910);" data-title="Bad Blood"></div>
+                <div class="book" style="height: 138px; background: linear-gradient(180deg, #1abc9c, #148f77);" data-title="Creativity, Inc."></div>
+                <div class="book" style="height: 122px; background: linear-gradient(180deg, #9b59b6, #7d3c98);" data-title="Hatching Twitter"></div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-title">Daily Puzzle</div>
+            <div class="chess-puzzle">
+                <div class="mini-board">
+                    <!-- Row 8 -->
+                    <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark">♚</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+                    <!-- Row 7 -->
+                    <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light">♟</span><span class="dark"></span><span class="light"></span>
+                    <!-- Row 6 -->
+                    <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+                    <!-- Row 5 -->
+                    <span class="dark"></span><span class="light"></span><span class="dark">♕</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+                    <!-- Row 4 -->
+                    <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+                    <!-- Row 3 -->
+                    <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+                    <!-- Row 2 -->
+                    <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+                    <!-- Row 1 -->
+                    <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light">♔</span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+                </div>
+                <div class="puzzle-info">
+                    <h4>White to move</h4>
+                    <p>Mate in 2</p>
+                    <a href="https://chess.com" target="_blank">Play me on Chess.com →</a>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-title">Background</div>
+            <p>Born in Boston. Raised in San Francisco. College at Emory in Atlanta. Now in Brooklyn.</p>
+            <p>When I'm not working: cooking, chess, biographies, history, skiing.</p>
+        </section>
+
+        <hr>
+
+        <div class="links">
+            <a href="https://twitter.com/JasonYanowitz" target="_blank">Twitter</a>
+            <a href="https://linkedin.com/in/yanowitzjason" target="_blank">LinkedIn</a>
+            <a href="https://blockworks.co" target="_blank">Blockworks</a>
+            <a href="https://blockworksresearch.com" target="_blank">Blockworks Research</a>
+        </div>
+
+        <footer>
+            <span>© 2025</span>
+            <span class="brooklyn-time" id="brooklyn-time"></span>
+        </footer>
+    </div>
+
+    <script>
+        // Live age counter (like Mackenzie Child)
+        function calculateAge() {
+            const birthDate = new Date('1990-06-15'); // Replace with actual birthdate
+            const now = new Date();
+            const diff = now - birthDate;
+            const years = diff / (1000 * 60 * 60 * 24 * 365.25);
+            return years.toFixed(10);
+        }
+
+        function updateAge() {
+            document.getElementById('age').textContent = calculateAge();
+        }
+
+        updateAge();
+        setInterval(updateAge, 50);
+
+        // Brooklyn time
+        function updateBrooklynTime() {
+            const options = {
+                timeZone: 'America/New_York',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            const time = new Date().toLocaleTimeString('en-US', options);
+            document.getElementById('brooklyn-time').textContent = `Brooklyn ${time}`;
+        }
+
+        updateBrooklynTime();
+        setInterval(updateBrooklynTime, 1000);
+    </script>
+</body>
+</html>

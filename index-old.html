@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jason Yanowitz</title>
+    <meta name="description" content="Co-founder of Blockworks. Host of Empire podcast. Brooklyn, NY.">
+    <meta property="og:title" content="Jason Yanowitz">
+    <meta property="og:description" content="Co-founder of Blockworks. Host of Empire podcast.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@JasonYanowitz">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --muted: #888;
+            --accent: #c43d2e;
+            --accent-hover: #a83327;
+            --border: #e8e6e3;
+            --surface: #f7f6f4;
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --text: #e8e6e3;
+            --text-secondary: #b8b8b8;
+            --muted: #777;
+            --accent: #ff6b5b;
+            --accent-hover: #ff8578;
+            --border: #2a2a2a;
+            --surface: #1a1a1a;
+        }
+
+        [data-theme="midnight"] {
+            --bg: #0a0e1a;
+            --text: #c9d1e3;
+            --text-secondary: #8892a8;
+            --muted: #5a6478;
+            --accent: #6c8cff;
+            --accent-hover: #8ba4ff;
+            --border: #1a2035;
+            --surface: #111827;
+        }
+
+        [data-theme="forest"] {
+            --bg: #0f1a0f;
+            --text: #d4e5d4;
+            --text-secondary: #9cb89c;
+            --muted: #6a8a6a;
+            --accent: #4ade80;
+            --accent-hover: #6ee7a0;
+            --border: #1a2a1a;
+            --surface: #152015;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            min-height: 100vh;
+            padding: 0 24px;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 100px 0 140px;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 64px;
+        }
+
+        h1 {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            gap: 6px;
+            padding: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            z-index: 100;
+        }
+
+        .theme-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--accent);
+        }
+
+        .theme-btn[data-theme="light"] {
+            background: linear-gradient(135deg, #fdfcfb 50%, #e8e6e3 50%);
+        }
+
+        .theme-btn[data-theme="dark"] {
+            background: linear-gradient(135deg, #1a1a1a 50%, #2a2a2a 50%);
+        }
+
+        .theme-btn[data-theme="midnight"] {
+            background: linear-gradient(135deg, #0a0e1a 50%, #1a2035 50%);
+        }
+
+        .theme-btn[data-theme="forest"] {
+            background: linear-gradient(135deg, #0f1a0f 50%, #1a2a1a 50%);
+        }
+
+        /* Section styling */
+        section {
+            margin-bottom: 56px;
+        }
+
+        .section-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        a {
+            color: var(--text);
+            text-decoration: underline;
+            text-decoration-color: var(--border);
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--accent);
+            text-decoration-color: var(--accent);
+        }
+
+        /* Intro section - no label */
+        .intro p {
+            font-size: 1.1rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* Investments */
+        .investments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .investment-card {
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .investment-card:hover {
+            border-color: var(--text);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .investment-card .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+
+        .investment-card .logo-placeholder {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .investment-card .text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .investment-card .name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+            text-decoration: none;
+        }
+
+        .investment-card .description {
+            font-size: 0.7rem;
+            color: var(--muted);
+            line-height: 1.3;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .investment-card .status {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-top: 3px;
+        }
+
+        .investment-card .status.active {
+            color: #2563eb;
+        }
+
+        .investment-card .status.exited {
+            color: #16a34a;
+        }
+
+        .investment-card .status.shutdown {
+            color: #dc2626;
+        }
+
+        /* Currently Reading */
+        .currently-reading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 12px;
+        }
+
+        .current-book {
+            text-align: center;
+        }
+
+        .current-book-cover {
+            aspect-ratio: 2 / 3;
+            border-radius: 3px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin-bottom: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .current-book:hover .current-book-cover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .current-book-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.3;
+            margin-bottom: 2px;
+        }
+
+        .current-book-author {
+            font-size: 0.6rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .current-book-progress {
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .current-book-progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .current-book-percent {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55rem;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        /* The Bookshelf */
+        .bookshelf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .book-filters {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
+
+        .book-count {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .year-section {
+            margin-bottom: 32px;
+        }
+
+        .year-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .bookshelf {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 12px;
+        }
+
+        .book {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .book-cover {
+            aspect-ratio: 2 / 3;
+            border-radius: 3px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book:hover .book-cover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Book badge */
+        .book-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 0.65rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        /* Tooltip on hover */
+        .book-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            padding: 40px 8px 8px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .book:hover .book-info {
+            opacity: 1;
+        }
+
+        .book-info .title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: white;
+            line-height: 1.3;
+            margin-bottom: 2px;
+        }
+
+        .book-info .author {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Hidden class for filtering */
+        .book.hidden {
+            display: none;
+        }
+
+        /* Chess Section */
+        .chess-section {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .chess-board-link {
+            position: relative;
+            text-decoration: none;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .mini-board {
+            width: 160px;
+            height: 160px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease;
+        }
+
+        .chess-board-link:hover .mini-board {
+            transform: scale(1.02);
+        }
+
+        .mini-board span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .mini-board span.light { background: #f0d9b5; }
+        .mini-board span.dark { background: #b58863; }
+
+        .board-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            border-radius: 8px;
+        }
+
+        .chess-board-link:hover .board-overlay {
+            opacity: 1;
+        }
+
+        .puzzle-info {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .puzzle-info h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .puzzle-info .puzzle-hint {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .puzzle-link {
+            display: inline-flex;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .puzzle-link:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Background section */
+        .background-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 20px;
+            font-size: 0.95rem;
+        }
+
+        .background-grid dt {
+            color: var(--muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .background-grid dd {
+            color: var(--text-secondary);
+        }
+
+        /* Interests as tags */
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .interest-tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .interest-tag:hover {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 56px 0;
+        }
+
+        /* Links */
+        .links {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .links a:hover {
+            color: var(--text);
+        }
+
+        .links a svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .links a:hover svg {
+            opacity: 1;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .brooklyn-time {
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            background: var(--surface);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 60px 0 100px;
+            }
+
+            .bookshelf {
+                padding: 20px 12px 16px;
+                gap: 4px;
+                overflow-x: auto;
+            }
+
+            .book {
+                width: 26px;
+                flex-shrink: 0;
+            }
+
+            .chess-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .investments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .background-grid {
+                grid-template-columns: 1fr;
+                gap: 4px 0;
+            }
+
+            .background-grid dt {
+                margin-top: 12px;
+            }
+
+            .background-grid dt:first-child {
+                margin-top: 0;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+
+        /* Subtle entrance animation */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section, header, footer, hr {
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        header { animation-delay: 0s; }
+        section:nth-of-type(1) { animation-delay: 0.1s; }
+        hr:nth-of-type(1) { animation-delay: 0.15s; }
+        section:nth-of-type(2) { animation-delay: 0.2s; }
+        hr:nth-of-type(2) { animation-delay: 0.25s; }
+        section:nth-of-type(3) { animation-delay: 0.3s; }
+        section:nth-of-type(4) { animation-delay: 0.35s; }
+        hr:nth-of-type(3) { animation-delay: 0.4s; }
+        section:nth-of-type(5) { animation-delay: 0.45s; }
+        hr:nth-of-type(4) { animation-delay: 0.5s; }
+        section:nth-of-type(6) { animation-delay: 0.55s; }
+        hr:nth-of-type(5) { animation-delay: 0.6s; }
+        section:nth-of-type(7) { animation-delay: 0.65s; }
+        footer { animation-delay: 0.7s; }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button class="theme-btn active" data-theme="light" title="Light"></button>
+        <button class="theme-btn" data-theme="dark" title="Dark"></button>
+        <button class="theme-btn" data-theme="midnight" title="Midnight"></button>
+        <button class="theme-btn" data-theme="forest" title="Forest"></button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Jason Yanowitz</h1>
+            <div class="subtitle">Brooklyn, NY</div>
+        </header>
+
+        <section class="intro">
+            <p>In 2018, Mike and I launched <a href="https://blockworks.co" target="_blank" rel="noopener">Blockworks</a>. We're a 75+ person media, events, and data company that helps investors understand crypto. You can read about us in <a href="https://www.semafor.com/article/01/31/2023/crypto-publisher-blockworks-raises-12-million" target="_blank" rel="noopener">Semafor</a>, <a href="https://www.axios.com/pro/media-deals/2023/01/31/blockworks-series-a-funding" target="_blank" rel="noopener">Axios</a>, <a href="https://www.forbes.com/sites/digital-assets/article/blockworks-ceo-how-to-build-a-media-company/" target="_blank" rel="noopener">Forbes</a>, <a href="https://fortune.com/crypto/2023/01/31/blockworks-series-a-funding-10x-founders/" target="_blank" rel="noopener">Fortune</a>, and <a href="https://digiday.com/media/blockworks-is-bucking-the-crypto-media-trend-by-growing/" target="_blank" rel="noopener">Digiday</a> or listen to our story on the <a href="https://www.therebooting.com/" target="_blank" rel="noopener">Rebooting podcast</a>.</p>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-label">Angel Investments</div>
+            <div class="investments-grid">
+                <a href="https://alliance.xyz" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://alliance.xyz/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">A</div>
+                    <div class="text">
+                        <div class="name">Alliance DAO</div>
+                        <p class="description">Leading Web3 accelerator</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.beehiiv.com" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.beehiiv.com/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">B</div>
+                    <div class="text">
+                        <div class="name">Beehiiv</div>
+                        <p class="description">The best newsletter platform</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.eco.com" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.eco.com/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">E</div>
+                    <div class="text">
+                        <div class="name">Eco</div>
+                        <p class="description">Spend, send, save and make money</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.ejara.io" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.ejara.io/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">E</div>
+                    <div class="text">
+                        <div class="name">Ejara</div>
+                        <p class="description">Financial access for Africa</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <div class="investment-card">
+                    <div class="logo-placeholder">E</div>
+                    <div class="text">
+                        <div class="name">Ellipsis Labs</div>
+                        <p class="description">Liquidity backbone of Solana</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </div>
+                <a href="https://friktion.fi" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://friktion.fi/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">F</div>
+                    <div class="text">
+                        <div class="name">Friktion</div>
+                        <p class="description">DeFi options vaults on Solana</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://gamergains.com" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://gamergains.com/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">G</div>
+                    <div class="text">
+                        <div class="name">GamerGains</div>
+                        <p class="description">Earn crypto playing games</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.jito.wtf" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.jito.wtf/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">J</div>
+                    <div class="text">
+                        <div class="name">Jito</div>
+                        <p class="description">MEV infrastructure for Solana</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.kado.money" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.kado.money/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">K</div>
+                    <div class="text">
+                        <div class="name">Kado Money</div>
+                        <p class="description">Payments infrastructure</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://kinto.xyz" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://kinto.xyz/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">K</div>
+                    <div class="text">
+                        <div class="name">Kinto</div>
+                        <p class="description">First KYC'ed L2 on Ethereum</p>
+                        <div class="status shutdown">Shut Down</div>
+                    </div>
+                </a>
+                <a href="https://meow.co" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://meow.co/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">M</div>
+                    <div class="text">
+                        <div class="name">Meow</div>
+                        <p class="description">Better cash returns for business</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://movementlabs.xyz" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://movementlabs.xyz/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">M</div>
+                    <div class="text">
+                        <div class="name">Movement Labs</div>
+                        <p class="description">Move-based infrastructure</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <div class="investment-card">
+                    <div class="logo-placeholder">O</div>
+                    <div class="text">
+                        <div class="name">Olive</div>
+                        <p class="description">Decentralised perpetuals trading</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </div>
+                <a href="https://www.pear.garden" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.pear.garden/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">P</div>
+                    <div class="text">
+                        <div class="name">Pear Protocol</div>
+                        <p class="description">Decentralized pairs trading</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.rio.network" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.rio.network/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">R</div>
+                    <div class="text">
+                        <div class="name">Rio</div>
+                        <p class="description">Liquid restaking network</p>
+                        <div class="status exited">Exited</div>
+                    </div>
+                </a>
+                <a href="https://river.com" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://river.com/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">R</div>
+                    <div class="text">
+                        <div class="name">River</div>
+                        <p class="description">Best platform to buy Bitcoin</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.romeprotocol.com" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.romeprotocol.com/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">R</div>
+                    <div class="text">
+                        <div class="name">Rome</div>
+                        <p class="description">Shared sequencers for Solana</p>
+                        <div class="status active">Active</div>
+                    </div>
+                </a>
+                <a href="https://www.joinryze.com" target="_blank" rel="noopener" class="investment-card">
+                    <img class="logo" src="https://www.joinryze.com/favicon.ico" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="logo-placeholder" style="display:none">R</div>
+                    <div class="text">
+                        <div class="name">Ryze</div>
+                        <p class="description">Bitcoin-native neobank</p>
+                        <div class="status shutdown">Shut Down</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-label">Bookshelf</div>
+
+            <div class="bookshelf-header">
+                <div class="book-filters">
+                    <span class="filter-label">Filter:</span>
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="favorite">★ Favorites</button>
+                    <button class="filter-btn" data-filter="liked">♡ Liked</button>
+                </div>
+                <span class="book-count">12 books</span>
+            </div>
+
+            <div class="year-section">
+                <div class="year-label">2025</div>
+                <div class="bookshelf">
+                    <div class="book" data-rating="favorite">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1566430126i/1137.jpg');"></div>
+                        <span class="book-badge">★</span>
+                        <div class="book-info">
+                            <div class="title">The Power Broker</div>
+                            <div class="author">Robert Caro</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="favorite">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1457284880i/27220736.jpg');"></div>
+                        <span class="book-badge">★</span>
+                        <div class="book-info">
+                            <div class="title">Shoe Dog</div>
+                            <div class="author">Phil Knight</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="favorite">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327869673i/16121.jpg');"></div>
+                        <span class="book-badge">★</span>
+                        <div class="book-info">
+                            <div class="title">Titan</div>
+                            <div class="author">Ron Chernow</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="year-section">
+                <div class="year-label">2024</div>
+                <div class="bookshelf">
+                    <div class="book" data-rating="favorite">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1511288482i/11084145.jpg');"></div>
+                        <span class="book-badge">★</span>
+                        <div class="book-info">
+                            <div class="title">Steve Jobs</div>
+                            <div class="author">Walter Isaacson</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="favorite">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1626739020i/18176747.jpg');"></div>
+                        <span class="book-badge">★</span>
+                        <div class="book-info">
+                            <div class="title">The Hard Thing About Hard Things</div>
+                            <div class="author">Ben Horowitz</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1549995619i/44525305.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">The Ride of a Lifetime</div>
+                            <div class="author">Bob Iger</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1692288251i/122765395.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">Elon Musk</div>
+                            <div class="author">Walter Isaacson</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="year-section">
+                <div class="year-label">2023</div>
+                <div class="bookshelf">
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1365394361i/17660462.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">The Everything Store</div>
+                            <div class="author">Brad Stone</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1414347376i/18050143.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">Zero to One</div>
+                            <div class="author">Peter Thiel</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1556268702i/37976541.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">Bad Blood</div>
+                            <div class="author">John Carreyrou</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1400863577i/18077903.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">Creativity, Inc.</div>
+                            <div class="author">Ed Catmull</div>
+                        </div>
+                    </div>
+                    <div class="book" data-rating="liked">
+                        <div class="book-cover" style="background-image: url('https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1349038937i/16176317.jpg');"></div>
+                        <span class="book-badge">♡</span>
+                        <div class="book-info">
+                            <div class="title">Hatching Twitter</div>
+                            <div class="author">Nick Bilton</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="section-label">Chess</div>
+            <div class="chess-section">
+                <a href="https://www.chess.com/puzzles" target="_blank" rel="noopener" class="chess-board-link">
+                    <div class="mini-board">
+                        <span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark">♚</span><span class="light"></span><span class="dark"></span><span class="light">♜</span><span class="dark"></span>
+                        <span class="dark">♟</span><span class="light">♟</span><span class="dark"></span><span class="light">♟</span><span class="dark"></span><span class="light">♟</span><span class="dark">♟</span><span class="light">♟</span>
+                        <span class="light"></span><span class="dark"></span><span class="light">♟</span><span class="dark"></span><span class="light"></span><span class="dark">♞</span><span class="light"></span><span class="dark"></span>
+                        <span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark">♙</span><span class="light"></span><span class="dark"></span><span class="light"></span>
+                        <span class="light"></span><span class="dark"></span><span class="light">♗</span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span>
+                        <span class="dark"></span><span class="light"></span><span class="dark">♙</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark"></span><span class="light"></span>
+                        <span class="light">♙</span><span class="dark">♙</span><span class="light"></span><span class="dark"></span><span class="light"></span><span class="dark">♙</span><span class="light">♙</span><span class="dark">♙</span>
+                        <span class="dark">♖</span><span class="light"></span><span class="dark"></span><span class="light">♕</span><span class="dark"></span><span class="light">♖</span><span class="dark">♔</span><span class="light"></span>
+                    </div>
+                    <span class="board-overlay">Play Daily Puzzle</span>
+                </a>
+                <div class="puzzle-info">
+                    <h4>White to move</h4>
+                    <p class="puzzle-hint">Mate in 2</p>
+                    <a href="https://www.chess.com/member/btcjason" target="_blank" rel="noopener" class="puzzle-link">Challenge me on Chess.com →</a>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="links-section">
+            <div class="links">
+                <a href="https://twitter.com/JasonYanowitz" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    Twitter
+                </a>
+                <a href="https://linkedin.com/in/yanowitzjason" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+                    LinkedIn
+                </a>
+                <a href="https://blockworks.co" target="_blank" rel="noopener">
+                    Blockworks
+                </a>
+                <a href="https://www.blockworksresearch.com" target="_blank" rel="noopener">
+                    Research
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <span>&copy; 2025 Jason Yanowitz</span>
+            <span class="brooklyn-time" id="brooklyn-time">--:--:-- --</span>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        // Apply saved theme on load
+        if (savedTheme !== 'light') {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === savedTheme);
+            });
+        }
+
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+
+                // Update active state
+                themeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Apply theme
+                if (theme === 'light') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', theme);
+                }
+
+                // Save preference
+                localStorage.setItem('theme', theme);
+            });
+        });
+
+        // Brooklyn time
+        function updateBrooklynTime() {
+            const options = {
+                timeZone: 'America/New_York',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            const time = new Date().toLocaleTimeString('en-US', options);
+            const timeEl = document.getElementById('brooklyn-time');
+            if (timeEl) {
+                timeEl.textContent = time + ' EST';
+            }
+        }
+
+        updateBrooklynTime();
+        setInterval(updateBrooklynTime, 1000);
+
+        // Book filtering
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                const books = document.querySelectorAll('.book');
+                let visibleCount = 0;
+
+                books.forEach(book => {
+                    if (filter === 'all' || book.dataset.rating === filter) {
+                        book.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        book.classList.add('hidden');
+                    }
+                });
+
+                // Update book count
+                document.querySelector('.book-count').textContent = visibleCount + ' book' + (visibleCount !== 1 ? 's' : '');
+            });
+        });
+    </script>
+</body>
+</html>
