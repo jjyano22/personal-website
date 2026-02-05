@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Jason Yanowitz</title>
+    <meta name="description" content="The page you're looking for doesn't exist.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://www.yanowitzjason.com/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #fdfcfb;
+            --text: #1a1a1a;
+            --muted: #666;
+            --accent: #555bd8;
+            --accent-hover: #4449b3;
+        }
+        ::selection { background: var(--accent); color: white; }
+        body {
+            font-family: 'Newsreader', Georgia, serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 0 24px;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 500px;
+            text-align: center;
+            padding: 60px 0;
+        }
+        h1 {
+            font-family: 'Newsreader', serif;
+            font-size: 4rem;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: var(--muted);
+        }
+        .message {
+            font-size: 1.2rem;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+        .home-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+        .home-link:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>404</h1>
+        <p class="message">This page doesn't exist.</p>
+        <a href="/" class="home-link">Go back home</a>
+    </main>
+</body>
+</html>
