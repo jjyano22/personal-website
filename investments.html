@@ -3,7 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investments - Jason Yanowitz</title>
+    <title>Angel Investments - Jason Yanowitz | 67 Crypto & Web3 Startups</title>
+    <meta name="description" content="Jason Yanowitz's angel investment portfolio of 67 startups including Monad, Jito, Helius, Beehiiv, River, and more in crypto, Web3, and technology.">
+    <meta name="author" content="Jason Yanowitz">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.yanowitzjason.com/investments.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.yanowitzjason.com/investments.html">
+    <meta property="og:title" content="Angel Investments - Jason Yanowitz | 67 Startups">
+    <meta property="og:description" content="Portfolio of 67 angel investments in crypto, Web3, and technology startups including Monad, Jito, Helius, and Beehiiv.">
+    <meta property="og:image" content="https://www.yanowitzjason.com/og-image.png">
+    <meta property="og:site_name" content="Jason Yanowitz">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@JasonYanowitz">
+    <meta name="twitter:title" content="Angel Investments - Jason Yanowitz | 67 Startups">
+    <meta name="twitter:description" content="Portfolio of 67 angel investments in crypto, Web3, and technology startups.">
+    <meta name="twitter:image" content="https://www.yanowitzjason.com/og-image.png">
+
+    <!-- Structured Data - BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.yanowitzjason.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Investments", "item": "https://www.yanowitzjason.com/investments.html"}
+        ]
+    }
+    </script>
+
+    <!-- Structured Data - CollectionPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Jason Yanowitz's Angel Investments",
+        "description": "Angel investment portfolio of 67 startups in crypto, Web3, and technology including Monad, Jito, Helius, Beehiiv, and River.",
+        "url": "https://www.yanowitzjason.com/investments.html",
+        "author": {
+            "@type": "Person",
+            "name": "Jason Yanowitz",
+            "url": "https://www.yanowitzjason.com",
+            "jobTitle": "Angel Investor"
+        },
+        "about": {
+            "@type": "Thing",
+            "name": "Angel Investing"
+        },
+        "numberOfItems": 67
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
@@ -11,17 +70,20 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #fdfcfb;
-            --text: #1a1a1a;
-            --muted: #666;
-            --accent: #555bd8;
-            --border: #e5e5e5;
+            --bg: #1a1612;
+            --surface: #252019;
+            --text: #e8e4df;
+            --muted: #8a857d;
+            --accent: #d4a574;
+            --border: #3a342c;
             --active: #22c55e;
-            --exited: #3b82f6;
-            --shutdown: #9ca3af;
+            --active-glow: rgba(34, 197, 94, 0.4);
+            --exited: #60a5fa;
+            --exited-glow: rgba(96, 165, 250, 0.4);
+            --shutdown: #6b7280;
         }
 
-        ::selection { background: var(--accent); color: white; }
+        ::selection { background: var(--accent); color: var(--bg); }
 
         body {
             font-family: 'Newsreader', Georgia, serif;
@@ -34,7 +96,7 @@
 
         .container { max-width: 600px; margin: 0 auto; padding: 60px 0 100px; }
 
-        .header { margin-bottom: 32px; }
+        .header { margin-bottom: 40px; }
 
         .back-link {
             font-family: 'Inter', sans-serif;
@@ -44,10 +106,10 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             transition: color 0.2s;
         }
-        .back-link:hover { color: var(--text); }
+        .back-link:hover { color: var(--accent); }
 
         h1 {
             font-family: 'Newsreader', serif;
@@ -55,24 +117,110 @@
             font-weight: 400;
             font-style: italic;
             letter-spacing: -0.02em;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        .subtitle { color: var(--muted); font-size: 1rem; }
-
-        /* Stats Row */
-        .stats-row {
-            display: flex;
-            gap: 24px;
-            margin: 24px 0;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+        .subtitle {
+            color: var(--muted);
+            font-size: 1rem;
+            font-style: italic;
         }
 
-        .stat-item {
+        /* Stats Section */
+        .stats-section {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 32px;
+            margin: 32px 0;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+
+        .stats-circle svg {
+            transform: rotate(-90deg);
+            width: 80px;
+            height: 80px;
+        }
+
+        .stats-circle-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 6;
+        }
+
+        .stats-circle-active {
+            fill: none;
+            stroke: var(--active);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 201;
+            stroke-dashoffset: 29;
+            filter: drop-shadow(0 0 4px var(--active-glow));
+        }
+
+        .stats-circle-exited {
+            fill: none;
+            stroke: var(--exited);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 201;
+            stroke-dashoffset: 192;
+            filter: drop-shadow(0 0 4px var(--exited-glow));
+        }
+
+        .stats-circle-shutdown {
+            fill: none;
+            stroke: var(--shutdown);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 201;
+            stroke-dashoffset: 180;
+        }
+
+        .stats-total {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .stats-total-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .stats-total-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stats-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
         }
 
         .stat-dot {
@@ -81,35 +229,59 @@
             border-radius: 50%;
         }
 
-        .stat-dot.active { background: var(--active); }
-        .stat-dot.exited { background: var(--exited); }
-        .stat-dot.shutdown { background: var(--shutdown); }
+        .stat-dot.active {
+            background: var(--active);
+            box-shadow: 0 0 8px var(--active-glow);
+        }
 
-        .stat-count { font-weight: 600; }
-        .stat-text { color: var(--muted); }
+        .stat-dot.exited {
+            background: var(--exited);
+            box-shadow: 0 0 8px var(--exited-glow);
+        }
+
+        .stat-dot.shutdown {
+            background: var(--shutdown);
+        }
+
+        .stat-count {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .stat-label {
+            color: var(--muted);
+        }
 
         /* Filters */
         .filters {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             margin-bottom: 24px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
             font-family: 'Inter', sans-serif;
-            font-size: 0.7rem;
-            padding: 4px 10px;
+            font-size: 0.75rem;
+            padding: 6px 14px;
             background: transparent;
             border: 1px solid var(--border);
-            border-radius: 14px;
+            border-radius: 20px;
             color: var(--muted);
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .filter-btn:hover { border-color: var(--text); color: var(--text); }
-        .filter-btn.active { background: var(--text); border-color: var(--text); color: white; }
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+        }
 
         /* Investment List */
         .investments-list {
@@ -132,60 +304,44 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 0;
+            padding: 14px 0;
             cursor: pointer;
             transition: all 0.15s;
-            text-decoration: none;
-            color: inherit;
         }
 
         .investment-header:hover {
-            padding-left: 4px;
+            padding-left: 8px;
         }
 
         .investment-header:hover .investment-name {
             color: var(--accent);
         }
 
-        .investment-logo {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            object-fit: cover;
-            background: #f5f5f5;
-            flex-shrink: 0;
-        }
-
-        .investment-logo-placeholder {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.6rem;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
+        .status-indicator {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             flex-shrink: 0;
         }
 
-        .status-dot.active { background: var(--active); }
-        .status-dot.exited { background: var(--exited); }
-        .status-dot.shutdown { background: var(--shutdown); }
+        .status-indicator.active {
+            background: var(--active);
+            box-shadow: 0 0 8px var(--active-glow);
+        }
+
+        .status-indicator.exited {
+            background: var(--exited);
+            box-shadow: 0 0 8px var(--exited-glow);
+        }
+
+        .status-indicator.shutdown {
+            background: var(--shutdown);
+        }
 
         .investment-name {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-family: 'Newsreader', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
             transition: color 0.15s;
             flex: 1;
         }
@@ -198,53 +354,68 @@
             font-family: 'Inter', sans-serif;
             font-size: 0.7rem;
             color: var(--muted);
+            font-style: italic;
         }
 
-        .status-note.exited { color: var(--exited); }
+        .status-note.exited {
+            color: var(--exited);
+        }
 
         .investment-details {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.25s ease, padding 0.25s ease;
-            padding: 0 0 0 42px;
+            padding: 0 0 0 20px;
         }
 
         .investment-item.expanded .investment-details {
             max-height: 80px;
-            padding: 0 0 12px 42px;
+            padding: 0 0 14px 20px;
         }
 
         .investment-description {
             font-family: 'Inter', sans-serif;
             font-size: 0.8rem;
             color: var(--muted);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .investment-link {
             font-family: 'Inter', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--accent);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
         }
 
-        .investment-link:hover { text-decoration: underline; }
+        .investment-link:hover {
+            text-decoration: underline;
+        }
 
         .investment-link svg {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
         }
 
         @media (max-width: 640px) {
-            .stats-row {
-                gap: 16px;
+            .stats-section {
+                gap: 24px;
+            }
+
+            .stats-circle {
+                width: 70px;
+                height: 70px;
+            }
+
+            .stats-circle svg {
+                width: 70px;
+                height: 70px;
             }
 
             .investment-name {
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -254,27 +425,38 @@
         <div class="header">
             <a href="index.html" class="back-link">← Back</a>
             <h1>Angel Investments</h1>
+            <p class="subtitle">67 bets on builders I believe in.</p>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-item">
-                <span class="stat-count">66</span>
-                <span class="stat-text">Total</span>
+        <div class="stats-section">
+            <div class="stats-circle">
+                <svg viewBox="0 0 80 80">
+                    <circle class="stats-circle-bg" cx="40" cy="40" r="32"/>
+                    <circle class="stats-circle-active" cx="40" cy="40" r="32"/>
+                    <circle class="stats-circle-exited" cx="40" cy="40" r="32" style="stroke-dashoffset: 192; transform: rotate(257deg); transform-origin: center;"/>
+                    <circle class="stats-circle-shutdown" cx="40" cy="40" r="32" style="stroke-dashoffset: 180; transform: rotate(273deg); transform-origin: center;"/>
+                </svg>
+                <div class="stats-total">
+                    <div class="stats-total-number">67</div>
+                    <div class="stats-total-label">Total</div>
+                </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-dot active"></div>
-                <span class="stat-count">56</span>
-                <span class="stat-text">Active</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-dot exited"></div>
-                <span class="stat-count">3</span>
-                <span class="stat-text">Exited</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-dot shutdown"></div>
-                <span class="stat-count">7</span>
-                <span class="stat-text">Shut Down</span>
+            <div class="stats-breakdown">
+                <div class="stat-row">
+                    <div class="stat-dot active"></div>
+                    <span class="stat-count">57</span>
+                    <span class="stat-label">Active</span>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-dot exited"></div>
+                    <span class="stat-count">3</span>
+                    <span class="stat-label">Exited</span>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-dot shutdown"></div>
+                    <span class="stat-count">7</span>
+                    <span class="stat-label">Shut Down</span>
+                </div>
             </div>
         </div>
 
@@ -288,14 +470,12 @@
         <div class="investments-list">
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=3fmutual.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">3F</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">3F</div>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Insurance protocol</p>
-                    <a href="https://www.3fmutual.com" target="_blank" rel="noopener" class="investment-link">
+                    <a href="https://3f.xyz/" target="_blank" rel="noopener" class="investment-link">
                         Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                     </a>
                 </div>
@@ -303,9 +483,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=alliance.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Alliance DAO</div>
                 </div>
                 <div class="investment-details">
@@ -318,9 +496,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=allora.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Allora</div>
                 </div>
                 <div class="investment-details">
@@ -333,9 +509,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=andrena.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Andrena</div>
                 </div>
                 <div class="investment-details">
@@ -348,9 +522,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=arch.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Arch Network</div>
                 </div>
                 <div class="investment-details">
@@ -363,9 +535,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=assetreality.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Asset Reality</div>
                 </div>
                 <div class="investment-details">
@@ -378,9 +548,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=astria.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Astria</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -391,9 +559,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=binocular.co&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Axel / Binocular</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -404,9 +570,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=beehiiv.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">B</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Beehiiv</div>
                 </div>
                 <div class="investment-details">
@@ -419,14 +583,12 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=blueprintfi.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">B</div>
-                    <div class="status-dot active"></div>
-                    <div class="investment-name">Blueprint Finance</div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Blueprint (Concrete + Glow)</div>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">DeFi infrastructure</p>
-                    <a href="https://blueprintfi.com" target="_blank" rel="noopener" class="investment-link">
+                    <a href="https://blueprintfinance.com/" target="_blank" rel="noopener" class="investment-link">
                         Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                     </a>
                 </div>
@@ -434,14 +596,12 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=cap.so&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">C</div>
-                    <div class="status-dot active"></div>
-                    <div class="investment-name">Cap Labs</div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Cap</div>
                 </div>
                 <div class="investment-details">
-                    <p class="investment-description">Stablecoin yield protocol</p>
-                    <a href="https://cap.so" target="_blank" rel="noopener" class="investment-link">
+                    <p class="investment-description">Stablecoin yield engine</p>
+                    <a href="https://cap.app/" target="_blank" rel="noopener" class="investment-link">
                         Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                     </a>
                 </div>
@@ -449,9 +609,46 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=dflow.net&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">D</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Chaos Labs</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Risk management for DeFi</p>
+                    <a href="https://chaoslabs.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Chillguy</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Meme coin launchpad</p>
+                    <a href="https://chillguy.xyz" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Cointracker</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Crypto tax and portfolio tracking</p>
+                    <a href="https://www.cointracker.io" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">DFlow</div>
                 </div>
                 <div class="investment-details">
@@ -464,9 +661,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=getdoormat.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">D</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Doormat</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -477,9 +672,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=doublezero.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">D</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">DoubleZero</div>
                 </div>
                 <div class="investment-details">
@@ -492,9 +685,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=eco.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">E</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Eco</div>
                 </div>
                 <div class="investment-details">
@@ -507,9 +698,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=ejara.io&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">E</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Ejara</div>
                 </div>
                 <div class="investment-details">
@@ -522,9 +711,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=ellipsislabs.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">E</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Ellipsis</div>
                 </div>
                 <div class="investment-details">
@@ -537,9 +724,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=fantasy.top&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">F</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Fantasy</div>
                 </div>
                 <div class="investment-details">
@@ -552,9 +737,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=fluent.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">F</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Fluent</div>
                 </div>
                 <div class="investment-details">
@@ -567,9 +750,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=friktion.fi&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">F</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Friktion</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -580,9 +761,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=galleon.io&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">G</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Galleon</div>
                 </div>
                 <div class="investment-details">
@@ -595,9 +774,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=gamergains.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">G</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">GamerGains</div>
                 </div>
                 <div class="investment-details">
@@ -610,9 +787,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=gardenintel.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">G</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Garden</div>
                 </div>
                 <div class="investment-details">
@@ -625,11 +800,9 @@
 
             <div class="investment-item exited" data-status="exited">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=geneva.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">G</div>
-                    <div class="status-dot exited"></div>
+                    <div class="status-indicator exited"></div>
                     <div class="investment-name">Geneva</div>
-                    <span class="status-note exited">Exited to Bumble</span>
+                    <span class="status-note exited">→ Bumble</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Group chat for communities</p>
@@ -641,9 +814,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=helius.dev&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">H</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Helius</div>
                 </div>
                 <div class="investment-details">
@@ -656,33 +827,33 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=invent.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">I</div>
-                    <div class="status-dot active"></div>
-                    <div class="investment-name">Invent Network</div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">The Invention Network</div>
                 </div>
                 <div class="investment-details">
-                    <p class="investment-description">Decentralized patent infrastructure</p>
+                    <p class="investment-description">Open IP network</p>
+                    <a href="https://theinventionnetwork.com/" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
                 </div>
             </div>
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=inversionspace.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">I</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Inversion</div>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Re-entry capsules for space</p>
+                    <a href="https://www.inversioncap.com/" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
                 </div>
             </div>
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=jito.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">J</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Jito</div>
                 </div>
                 <div class="investment-details">
@@ -693,13 +864,24 @@
                 </div>
             </div>
 
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Juice</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Cross-margin DeFi</p>
+                    <a href="https://www.juice.finance/" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
             <div class="investment-item exited" data-status="exited">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=kado.money&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">K</div>
-                    <div class="status-dot exited"></div>
+                    <div class="status-indicator exited"></div>
                     <div class="investment-name">Kado</div>
-                    <span class="status-note exited">Exited to Swapped.com</span>
+                    <span class="status-note exited">→ Swapped.com</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Crypto on/off ramp</p>
@@ -711,9 +893,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=kinto.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">K</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Kinto</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -724,9 +904,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=kintsu.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">K</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Kintsu</div>
                 </div>
                 <div class="investment-details">
@@ -739,9 +917,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=lootbase.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">L</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Lootbase</div>
                 </div>
                 <div class="investment-details">
@@ -754,9 +930,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=meow.co&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">M</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Meow</div>
                 </div>
                 <div class="investment-details">
@@ -769,9 +943,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=monad.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">M</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Monad</div>
                 </div>
                 <div class="investment-details">
@@ -784,9 +956,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=movementlabs.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">M</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Movement Labs</div>
                 </div>
                 <div class="investment-details">
@@ -799,21 +969,20 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=juice.finance&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">OJ</div>
-                    <div class="status-dot active"></div>
-                    <div class="investment-name">Omega + Juice</div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Native</div>
                 </div>
                 <div class="investment-details">
-                    <p class="investment-description">DeFi protocols</p>
+                    <p class="investment-description">Cross-chain liquidity aggregation</p>
+                    <a href="https://native.org" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
                 </div>
             </div>
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=opinions.fun&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">O</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Opinions.fun</div>
                 </div>
                 <div class="investment-details">
@@ -826,9 +995,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=outersignal.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">OS</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">OuterSignal</div>
                 </div>
                 <div class="investment-details">
@@ -841,9 +1008,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=pear.garden&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">P</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Pear Protocol</div>
                 </div>
                 <div class="investment-details">
@@ -856,9 +1021,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=pleasr.house&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">P</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">PleasrDAO</div>
                 </div>
                 <div class="investment-details">
@@ -871,9 +1034,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=olive.cash&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">P</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Polysynth (Olive)</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -882,17 +1043,28 @@
                 </div>
             </div>
 
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Pump.fun</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Meme coin launchpad on Solana</p>
+                    <a href="https://pump.fun" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
             <div class="investment-item exited" data-status="exited">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=rio.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">R</div>
-                    <div class="status-dot exited"></div>
+                    <div class="status-indicator exited"></div>
                     <div class="investment-name">Rio</div>
-                    <span class="status-note exited">Exited to EigenLayer</span>
+                    <span class="status-note exited">→ EigenLayer</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Liquid restaking network</p>
-                    <a href="https://www.rio.network" target="_blank" rel="noopener" class="investment-link">
+                    <a href="https://www.eigencloud.xyz/" target="_blank" rel="noopener" class="investment-link">
                         Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                     </a>
                 </div>
@@ -900,9 +1072,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=river.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">R</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">River</div>
                 </div>
                 <div class="investment-details">
@@ -915,9 +1085,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=romeprotocol.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">R</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Rome</div>
                 </div>
                 <div class="investment-details">
@@ -930,9 +1098,7 @@
 
             <div class="investment-item shutdown" data-status="shutdown">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=ryzecrypto.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">R</div>
-                    <div class="status-dot shutdown"></div>
+                    <div class="status-indicator shutdown"></div>
                     <div class="investment-name">Ryze</div>
                     <span class="status-note">Shut down</span>
                 </div>
@@ -943,9 +1109,20 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=skytrade.finance&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">S</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Secure3</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Smart contract auditing platform</p>
+                    <a href="https://www.secure3.io" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">SkyTrade</div>
                 </div>
                 <div class="investment-details">
@@ -958,9 +1135,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=spacecoin.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">S</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Spacecoin</div>
                 </div>
                 <div class="investment-details">
@@ -973,9 +1148,46 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=takeultra.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">U</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Superstate</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Tokenized treasuries</p>
+                    <a href="https://superstate.co" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Syndica</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Solana infrastructure platform</p>
+                    <a href="https://syndica.io" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Tensor</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">NFT marketplace on Solana</p>
+                    <a href="https://tensor.trade" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Ultra</div>
                 </div>
                 <div class="investment-details">
@@ -988,9 +1200,7 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=uraniumdigital.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">U</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Uranium Digital</div>
                 </div>
                 <div class="investment-details">
@@ -1003,14 +1213,38 @@
 
             <div class="investment-item" data-status="active">
                 <div class="investment-header">
-                    <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=valiant.trade&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="investment-logo-placeholder" style="display:none">V</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-indicator active"></div>
                     <div class="investment-name">Valiant</div>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Fastest spot DEX in crypto</p>
                     <a href="https://valiant.trade" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Wormhole</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Cross-chain messaging protocol</p>
+                    <a href="https://wormhole.com" target="_blank" rel="noopener" class="investment-link">
+                        Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="investment-item" data-status="active">
+                <div class="investment-header">
+                    <div class="status-indicator active"></div>
+                    <div class="investment-name">Zeta Markets</div>
+                </div>
+                <div class="investment-details">
+                    <p class="investment-description">Derivatives exchange on Solana</p>
+                    <a href="https://zeta.markets" target="_blank" rel="noopener" class="investment-link">
                         Visit website <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                     </a>
                 </div>

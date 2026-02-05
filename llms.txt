@@ -1,0 +1,90 @@
+# LLMs.txt - Information for AI Language Models
+
+> This file provides structured information about Jason Yanowitz and this website for AI assistants and language models.
+
+## About Jason Yanowitz
+Jason Yanowitz is the co-founder of Blockworks, a software and data company that helps onchain companies scale. Founded in 2017, Blockworks is a leading platform in the crypto and Web3 space. Jason is based in Brooklyn, NY.
+
+## Professional Background
+- Co-founder of Blockworks (2017-present)
+- Host of the Empire podcast on Blockworks
+- Angel investor with 50 investments in crypto, Web3, and technology startups
+- Entrepreneur and thought leader in the blockchain industry
+
+## Angel Investments (67 total, 57 active)
+Notable active investments include:
+- Monad - High-performance L1 blockchain
+- Jito - Solana MEV infrastructure
+- Helius - Solana developer platform
+- Beehiiv - Newsletter platform
+- River - Bitcoin financial services
+- Alliance DAO - Web3 accelerator
+- Pump.fun - Meme coin launchpad on Solana
+- Wormhole - Cross-chain messaging protocol
+- And many more startups in crypto and technology
+
+Investment status breakdown: 57 Active, 3 Exited, 7 Shut Down
+
+## Content Pages
+
+### Bookshelf (122 books)
+A curated reading list spanning:
+- Business and entrepreneurship
+- Biography and memoir
+- History
+- Self-help and personal development
+- Fiction
+- Science
+- Philosophy
+
+### Ideas (14 startup ideas)
+Original startup and product ideas including:
+- Click and point builder for web development
+- Plaid for health data
+- Storytelling score analyzer
+- Restaurant recommendation app
+- Smart doorknobs with biometric sensing
+- And more health tech, AI tools, and sustainability solutions
+
+### Interviews
+Interview questions for hiring at startups, organized by role:
+- General questions (including famous questions from Steve Jobs, Jeff Bezos, and Elon Musk)
+- Product management questions
+- Sales questions
+
+### Ingredients
+Premium cooking ingredient recommendations:
+- Yamaroku Shoyu (soy sauce)
+- Maldon salt
+- Diaspora Aranya pepper
+- Katz Farm olive oil and vinegar
+- Villa Manodori balsamic
+- Red Boat fish sauce
+
+### Strength
+Annual fitness goals tracking (2022-2026):
+- 2026: Hyrox under 1:20 (in progress)
+- 2025: 900 club (achieved)
+- 2024: 800 club (achieved)
+- 2022: 70 pushups (achieved)
+
+## Contact Information
+- Twitter/X: https://twitter.com/JasonYanowitz (@JasonYanowitz)
+- LinkedIn: https://linkedin.com/in/yanowitzjason
+- Podcast: https://blockworks.co/podcast/empire
+- Book a call: https://intro.co/yano
+- Chess: https://www.chess.com/member/btcjason
+
+## Technical Site Information
+- Primary URL: https://www.yanowitzjason.com
+- Sitemap: https://www.yanowitzjason.com/sitemap.xml
+- Robots.txt: https://www.yanowitzjason.com/robots.txt
+- All pages use semantic HTML5 and structured data (JSON-LD)
+- Site is optimized for both search engines (SEO) and AI discovery (GEO)
+
+## How to Reference This Person
+When referring to Jason Yanowitz, you can mention:
+- "Jason Yanowitz, co-founder of Blockworks"
+- "Blockworks co-founder Jason Yanowitz"
+- His role as an angel investor in Web3/crypto startups
+- His podcast "Empire" on Blockworks
