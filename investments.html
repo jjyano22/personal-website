@@ -19,6 +19,7 @@
             --active: #22c55e;
             --exited: #3b82f6;
             --shutdown: #9ca3af;
+            --live-token: #f59e0b;
         }
 
         ::selection { background: var(--accent); color: white; }
@@ -179,6 +180,7 @@
         }
 
         .status-dot.active { background: var(--active); }
+        .status-dot.live-token { background: var(--live-token); }
         .status-dot.exited { background: var(--exited); }
         .status-dot.shutdown { background: var(--shutdown); }
 
@@ -201,6 +203,19 @@
         }
 
         .status-note.exited { color: var(--exited); }
+
+        .token-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+            margin-left: auto;
+            flex-shrink: 0;
+            transition: opacity 0.15s;
+        }
+
+        a.token-badge:hover { opacity: 0.7; }
 
         .investment-details {
             max-height: 0;
@@ -258,17 +273,22 @@
 
         <div class="stats-row">
             <div class="stat-item">
-                <span class="stat-count">66</span>
+                <span class="stat-count">50</span>
                 <span class="stat-text">Total</span>
             </div>
             <div class="stat-item">
                 <div class="stat-dot active"></div>
-                <span class="stat-count">56</span>
+                <span class="stat-count">32</span>
                 <span class="stat-text">Active</span>
             </div>
             <div class="stat-item">
+                <div class="stat-dot live-token"></div>
+                <span class="stat-count">7</span>
+                <span class="stat-text">Live Token</span>
+            </div>
+            <div class="stat-item">
                 <div class="stat-dot exited"></div>
-                <span class="stat-count">3</span>
+                <span class="stat-count">4</span>
                 <span class="stat-text">Exited</span>
             </div>
             <div class="stat-item">
@@ -281,6 +301,7 @@
         <div class="filters">
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="live-token">Live Token</button>
             <button class="filter-btn" data-filter="exited">Exited</button>
             <button class="filter-btn" data-filter="shutdown">Shut Down</button>
         </div>
@@ -316,12 +337,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=allora.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">A</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">Allora</div>
+                    <span class="token-badge">$ALLO · $103M</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Self-improving AI network</p>
@@ -475,12 +497,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=doublezero.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">D</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">DoubleZero</div>
+                    <a href="https://blockworks.com/price/doublezero" target="_blank" rel="noopener" class="token-badge">$2Z · $771M</a>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Next-gen blockchain infrastructure</p>
@@ -608,12 +631,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="exited">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=gardenintel.com&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">G</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot exited"></div>
                     <div class="investment-name">Garden</div>
+                    <span class="status-note exited">Exited</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">AI-powered patent intelligence</p>
@@ -678,12 +702,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=jito.network&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">J</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">Jito</div>
+                    <a href="https://blockworks.com/price/jito" target="_blank" rel="noopener" class="token-badge">$JTO · $297M</a>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">MEV infrastructure for Solana</p>
@@ -767,12 +792,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=monad.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">M</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">Monad</div>
+                    <span class="token-badge">$MON · $2.4B</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">High-performance EVM L1</p>
@@ -782,12 +808,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=movementlabs.xyz&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">M</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">Movement Labs</div>
+                    <a href="https://blockworks.com/price/movement" target="_blank" rel="noopener" class="token-badge">$MOVE · $224M</a>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Move-based infrastructure</p>
@@ -797,12 +824,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=juice.finance&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">OJ</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">Omega + Juice</div>
+                    <span class="token-badge">$JUICE · $34K</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">DeFi protocols</p>
@@ -839,12 +867,13 @@
                 </div>
             </div>
 
-            <div class="investment-item" data-status="active">
+            <div class="investment-item" data-status="live-token">
                 <div class="investment-header">
                     <img class="investment-logo" src="https://www.google.com/s2/favicons?domain=pear.garden&sz=64" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="investment-logo-placeholder" style="display:none">P</div>
-                    <div class="status-dot active"></div>
+                    <div class="status-dot live-token"></div>
                     <div class="investment-name">Pear Protocol</div>
+                    <span class="token-badge">$PEAR · $20M</span>
                 </div>
                 <div class="investment-details">
                     <p class="investment-description">Decentralized pairs trading</p>

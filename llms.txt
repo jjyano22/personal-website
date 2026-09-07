@@ -63,7 +63,7 @@ Premium cooking ingredient recommendations:
 
 ### Strength
 Annual fitness goals tracking (2022-2026):
-- 2026: Hyrox under 1:20 (in progress)
+- 2026: Hyrox under 80min (in progress)
 - 2025: 900 club (achieved)
 - 2024: 800 club (achieved)
 - 2022: 70 pushups (achieved)
