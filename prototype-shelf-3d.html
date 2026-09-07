@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookshelf 3D — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#fdfcfb; --text:#1a1a1a; --muted:#666; --accent:#555bd8;
+  --border:#e5e4e2; --surface:#f5f4f2;
+}
+::selection { background:var(--accent); color:#fff; }
+body {
+  font-family:'Newsreader', Georgia, serif;
+  background:var(--bg); color:var(--text);
+  min-height:100vh; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.container { max-width:1100px; margin:0 auto; padding:48px 24px 80px; }
+.back-link {
+  font-family:'Inter',sans-serif; font-size:.8rem; color:var(--muted);
+  text-decoration:none; display:inline-flex; gap:6px; margin-bottom:20px;
+}
+.back-link:hover { color:var(--accent); }
+h1 { font-size:2rem; font-weight:400; font-style:italic; letter-spacing:-0.02em; }
+.hint { font-family:'Inter',sans-serif; font-size:.82rem; color:var(--muted); margin-top:6px; }
+
+/* ---------- stage ---------- */
+.stage {
+  position:relative; height:420px; margin-top:8px;
+  perspective:1400px; perspective-origin:50% 42%;
+  touch-action:pan-y; cursor:grab; user-select:none; -webkit-user-select:none;
+}
+.stage.dragging { cursor:grabbing; }
+.shelf {
+  position:absolute; left:50%; top:0; width:0; height:100%;
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.22,.9,.3,1);
+}
+.stage.dragging .shelf { transition:none; }
+
+/* shelf board */
+.board {
+  position:absolute; left:-40px; right:-40px; top:332px; height:14px;
+  background:linear-gradient(#efece7,#e2ded7);
+  border-radius:2px;
+  box-shadow:0 1px 0 rgba(0,0,0,.06), 0 18px 30px -12px rgba(30,25,20,.18);
+}
+.board::after {
+  content:''; position:absolute; left:0; right:0; top:14px; height:26px;
+  background:linear-gradient(rgba(30,25,20,.07), transparent);
+}
+
+/* ---------- book ---------- */
+.b {
+  position:absolute; left:0; top:0; transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.22,.9,.3,1), opacity .4s ease;
+  will-change:transform;
+}
+.b .f {
+  position:absolute; left:50%; top:50%;
+  backface-visibility:hidden; -webkit-backface-visibility:hidden;
+}
+.b .front { background:var(--surface); overflow:hidden; border-radius:2px 4px 4px 2px; }
+.b .front img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  opacity:0; transition:opacity .35s ease;
+}
+.b .front img.ok { opacity:1; }
+.b .front .shine {
+  position:absolute; inset:0; border-radius:inherit;
+  background:linear-gradient(100deg, rgba(255,255,255,.18) 0%, transparent 22%, transparent 78%, rgba(0,0,0,.12) 100%);
+  pointer-events:none;
+}
+.b .front .fallback {
+  position:absolute; inset:0; display:none; flex-direction:column; justify-content:space-between;
+  padding:14px 10px; text-align:center;
+}
+.b .front.nofallimg .fallback { display:flex; }
+.b .front .fallback .ft { font-family:'Newsreader',serif; font-size:.9rem; line-height:1.25; }
+.b .front .fallback .fa { font-family:'Inter',sans-serif; font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; opacity:.75; }
+.b .back { border-radius:4px 2px 2px 4px; }
+.b .spine {
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  padding:10px 0 8px; border-radius:2px; overflow:hidden;
+}
+.b .spine .st {
+  writing-mode:vertical-rl; font-family:'Inter',sans-serif; font-weight:500;
+  font-size:.62rem; letter-spacing:.04em; max-height:78%;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.b .spine .sa {
+  writing-mode:vertical-rl; font-family:'Inter',sans-serif; font-size:.5rem;
+  opacity:.7; margin-top:auto; max-height:18%; overflow:hidden; white-space:nowrap;
+}
+.b .edge  { background:repeating-linear-gradient(90deg,#f6f2e9 0px,#f6f2e9 1.5px,#e9e4d8 2.5px); }
+.b .etop  { background:repeating-linear-gradient(0deg,#f6f2e9 0px,#f6f2e9 1.5px,#e9e4d8 2.5px); border-radius:1px; }
+.b .ebot  { background:#efeadf; }
+.b.faded { opacity:.1; pointer-events:none; }
+.b .fav {
+  position:absolute; left:50%; top:50%; width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.7rem; color:#d4a574;
+  background:#fff; border-radius:50%; box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+
+/* ---------- nav arrows ---------- */
+.navbtn {
+  position:absolute; top:150px; z-index:5;
+  width:36px; height:36px; border-radius:8px;
+  background:var(--bg); border:1px solid var(--border);
+  font-family:'Inter',sans-serif; font-size:.9rem; color:var(--text);
+  cursor:pointer; opacity:0; transition:opacity .25s, border-color .2s;
+}
+.stage:hover .navbtn { opacity:1; }
+.navbtn:hover { border-color:var(--accent); color:var(--accent); }
+.navbtn.prev { left:6px; } .navbtn.next { right:6px; }
+
+/* ---------- meta under shelf ---------- */
+.meta { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-top:18px; min-height:96px; }
+.meta .left { max-width:70%; }
+.counter { font-family:'Inter',sans-serif; font-size:.72rem; color:var(--muted); letter-spacing:.12em; }
+.mtitle { font-size:1.45rem; font-weight:500; letter-spacing:-0.01em; margin-top:2px; line-height:1.2; }
+.mauthor { font-family:'Inter',sans-serif; font-size:.8rem; color:var(--muted); margin-top:2px; }
+.mrow { display:flex; align-items:center; gap:10px; margin-top:10px; }
+.chip {
+  font-family:'Inter',sans-serif; font-size:.65rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:3px 8px;
+}
+.chip.reading { color:var(--accent); border-color:var(--accent); }
+.chip.star { color:#b98a55; border-color:#e2cbaa; }
+.inspect-btn {
+  font-family:'Inter',sans-serif; font-size:.72rem; padding:6px 12px;
+  background:transparent; border:1px solid var(--border); border-radius:5px;
+  color:var(--text); cursor:pointer; transition:all .2s;
+}
+.inspect-btn:hover { border-color:var(--accent); color:var(--accent); }
+.progress-wrap { flex:1; max-width:220px; align-self:center; }
+.progress-track { height:2px; background:var(--border); border-radius:1px; position:relative; }
+.progress-fill { position:absolute; left:0; top:0; bottom:0; background:var(--accent); border-radius:1px; transition:width .3s ease; }
+
+/* ---------- inspect mode ---------- */
+.ipanel {
+  position:absolute; right:0; top:30px; width:320px; max-width:44%;
+  opacity:0; pointer-events:none; transform:translateX(16px);
+  transition:opacity .4s ease .1s, transform .4s ease .1s;
+  border-left:1px solid var(--border); padding-left:28px;
+}
+body.inspecting .ipanel { opacity:1; pointer-events:auto; transform:none; }
+.ipanel .backshelf {
+  font-family:'Inter',sans-serif; font-size:.72rem; color:var(--muted);
+  background:none; border:none; cursor:pointer; padding:0; margin-bottom:14px;
+}
+.ipanel .backshelf:hover { color:var(--accent); }
+.ipanel .it { font-size:1.5rem; font-weight:500; line-height:1.15; letter-spacing:-0.01em; }
+.ipanel .ia { font-family:'Inter',sans-serif; font-size:.8rem; color:var(--muted); margin-top:4px; }
+.ipanel .ichips { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.ipanel .ilink {
+  display:inline-block; margin-top:18px;
+  font-family:'Inter',sans-serif; font-size:.78rem; color:var(--accent); text-decoration:none;
+  border-bottom:1px solid currentColor; padding-bottom:1px;
+}
+.ipanel .ihint { font-family:'Inter',sans-serif; font-size:.65rem; color:#aaa; margin-top:46px; line-height:1.6; }
+body.inspecting .meta, body.inspecting .board { opacity:0; pointer-events:none; }
+body.inspecting .stage .navbtn, body.inspecting .stage:hover .navbtn { opacity:0; pointer-events:none; }
+.board, .meta { transition:opacity .35s ease; }
+
+@media (max-width:700px) {
+  .stage { height:340px; perspective:1000px; }
+  .board { top:262px; }
+  .ipanel { position:static; max-width:100%; width:100%; border-left:none; padding-left:0; margin-top:12px; display:none; }
+  body.inspecting .ipanel { display:block; }
+  .mtitle { font-size:1.15rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back-link" href="#">← Back</a>
+  <h1>Bookshelf</h1>
+  <p class="hint">Drag the shelf to browse, click a book to pick it up.</p>
+
+  <div style="position:relative">
+    <div class="stage" id="stage">
+      <button class="navbtn prev" aria-label="Previous book">←</button>
+      <div class="board"></div>
+      <div class="shelf" id="shelf"></div>
+      <button class="navbtn next" aria-label="Next book">→</button>
+    </div>
+
+    <div class="ipanel" id="ipanel">
+      <button class="backshelf">← Back to shelf</button>
+      <div class="it" id="it"></div>
+      <div class="ia" id="ia"></div>
+      <div class="ichips" id="ichips"></div>
+      <a class="ilink" id="ilink" target="_blank" rel="noopener">View this book ↗</a>
+      <div class="ihint">drag to orbit · scroll to zoom · esc to close</div>
+    </div>
+  </div>
+
+  <div class="meta" id="meta">
+    <div class="left">
+      <div class="counter" id="counter"></div>
+      <div class="mtitle" id="mtitle"></div>
+      <div class="mauthor" id="mauthor"></div>
+      <div class="mrow" id="mrow"></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BOOKS = [{"t":"Estée: A Success Story","a":"Estée Lauder","c":"biography business","img":"https://covers.openlibrary.org/b/id/6622818-L.jpg","fav":false,"sec":"reading","p":36},{"t":"Open","a":"Andre Agassi","c":"biography","img":"https://covers.openlibrary.org/b/isbn/9780307268198-L.jpg","fav":false,"sec":"reading","p":50},{"t":"The Wise Man's Fear","a":"Patrick Rothfuss","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/9780756404734-L.jpg","fav":false,"sec":"reading","p":45},{"t":"The Infinity Machine","a":"Sebastian Mallaby","c":"business science","img":"https://covers.openlibrary.org/b/isbn/9780593831847-L.jpg","fav":false,"sec":"reading","p":5},{"t":"A Taste for Happiness","a":"Michel David-Weill","c":"philosophy","img":"https://images-na.ssl-images-amazon.com/images/P/1500565164.01.L.jpg","fav":false,"sec":"reading","p":60},{"t":"Five Decembers","a":"James Kestrel","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/178909867X-L.jpg","fav":false,"sec":"reading","p":35},{"t":"Softwar","a":"Matthew Symonds","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/9780743225052-L.jpg","fav":false,"sec":"reading","p":25},{"t":"Gambling Man","a":"Lionel Barber","c":"biography","img":"https://images-na.ssl-images-amazon.com/images/P/0241582725.01.L.jpg","fav":false,"sec":"reading","p":20},{"t":"When the Heavens Went on Sale","a":"Ashlee Vance","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/9780062998873-L.jpg","fav":false,"sec":"reading","p":10},{"t":"The House of Morgan","a":"Ron Chernow","c":"history business","img":"https://covers.openlibrary.org/b/isbn/9780802138293-L.jpg","fav":false,"sec":"reading","p":15},{"t":"Only Yesterday","a":"Frederick Lewis Allen","c":"history","img":"https://covers.openlibrary.org/b/isbn/9780060956653-L.jpg","fav":false,"sec":"next"},{"t":"Loonshots","a":"Safi Bahcall","c":"business","img":"https://covers.openlibrary.org/b/isbn/9781250185969-L.jpg","fav":false,"sec":"next"},{"t":"The House of Mirth","a":"Edith Wharton","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0140187294-L.jpg","fav":false,"sec":"next"},{"t":"How the Mind Works","a":"Steven Pinker","c":"science","img":"https://covers.openlibrary.org/b/isbn/9780393334777-L.jpg","fav":false,"sec":"next"},{"t":"Poor Charlie's Almanack","a":"Charles T. Munger","c":"business","img":"https://covers.openlibrary.org/b/isbn/1953953239-L.jpg","fav":false,"sec":"next"},{"t":"Lords of Finance","a":"Liaquat Ahamed","c":"history business","img":"https://covers.openlibrary.org/b/isbn/9780143116806-L.jpg","fav":false,"sec":"next"},{"t":"The Name of the Wind","a":"Patrick Rothfuss","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0756404746-L.jpg","fav":true,"sec":"read"},{"t":"Breathe","a":"Rickson Gracie","c":"biography","img":"https://covers.openlibrary.org/b/isbn/9780063018952-L.jpg","fav":false,"sec":"read"},{"t":"1929","a":"Andrew Ross Sorkin","c":"history business","img":"https://images-na.ssl-images-amazon.com/images/P/0593296966.01.L.jpg","fav":false,"sec":"read"},{"t":"The Headache","a":"Tom Zeller Jr.","c":"science","img":"https://images-na.ssl-images-amazon.com/images/P/0358507758.01.L.jpg","fav":true,"sec":"read"},{"t":"The Fish That Ate the Whale","a":"Rich Cohen","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/0374299277-L.jpg","fav":false,"sec":"read"},{"t":"Chip War","a":"Chris Miller","c":"history business","img":"https://covers.openlibrary.org/b/isbn/1982172002-L.jpg","fav":false,"sec":"read"},{"t":"Who Knew","a":"Barry Diller","c":"business","img":"https://images-na.ssl-images-amazon.com/images/P/1668096870.01.L.jpg","fav":false,"sec":"read"},{"t":"Original Sin","a":"Jake Tapper","c":"history","img":"https://covers.openlibrary.org/b/isbn/9798217060672-L.jpg","fav":false,"sec":"read"},{"t":"Trust","a":"Hernan Diaz","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0593420322-L.jpg","fav":false,"sec":"read"},{"t":"The Innovators","a":"Walter Isaacson","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/147670869X-L.jpg","fav":false,"sec":"read"},{"t":"The Art of Learning","a":"Josh Waitzkin","c":"business","img":"https://covers.openlibrary.org/b/isbn/0743277465-L.jpg","fav":false,"sec":"read"},{"t":"Breaking History","a":"Jared Kushner","c":"biography history","img":"https://images-na.ssl-images-amazon.com/images/P/0063221489.01.L.jpg","fav":false,"sec":"read"},{"t":"Replay","a":"Ken Grimwood","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0877957819-L.jpg","fav":true,"sec":"read"},{"t":"Red Notice","a":"Bill Browder","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/1476755744-L.jpg","fav":true,"sec":"read"},{"t":"Astor","a":"Anderson Cooper","c":"history","img":"https://covers.openlibrary.org/b/olid/OL48230341M-L.jpg","fav":false,"sec":"read"},{"t":"The Five Dysfunctions of a Team","a":"Patrick Lencioni","c":"business","img":"https://covers.openlibrary.org/b/isbn/0787960756-L.jpg","fav":false,"sec":"read"},{"t":"The Three-Body Problem","a":"Liu Cixin","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0765382032-L.jpg","fav":false,"sec":"read"},{"t":"Elon Musk","a":"Walter Isaacson","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/1982181281-L.jpg","fav":true,"sec":"read"},{"t":"The River of Doubt","a":"Candice Millard","c":"history","img":"https://covers.openlibrary.org/b/isbn/0767913736-L.jpg","fav":false,"sec":"read"},{"t":"Titan","a":"Ron Chernow","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/1400077303-L.jpg","fav":true,"sec":"read"},{"t":"Meditations","a":"Marcus Aurelius","c":"philosophy","img":"https://covers.openlibrary.org/b/isbn/0140449337-L.jpg","fav":true,"sec":"read"},{"t":"Endurance","a":"Alfred Lansing","c":"history","img":"https://covers.openlibrary.org/b/isbn/0786706538-L.jpg","fav":true,"sec":"read"},{"t":"Project Hail Mary","a":"Andy Weir","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0593135229-L.jpg","fav":true,"sec":"read"},{"t":"High Output Management","a":"Andrew Grove","c":"business","img":"https://covers.openlibrary.org/b/isbn/0679762884-L.jpg","fav":false,"sec":"read"},{"t":"Snow Crash","a":"Neal Stephenson","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0553380958-L.jpg","fav":false,"sec":"read"},{"t":"How the Internet Happened","a":"Brian McCullough","c":"business","img":"https://books.google.com/books/content?id=9mxSDwAAQBAJ&printsec=frontcover&img=1&zoom=3","fav":false,"sec":"read"},{"t":"Reboot","a":"Jerry Colonna","c":"business","img":"https://covers.openlibrary.org/b/olid/OL28401755M-L.jpg","fav":false,"sec":"read"},{"t":"The Nightingale","a":"Kristin Hannah","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/1250080401-L.jpg","fav":true,"sec":"read"},{"t":"The Psychology of Money","a":"Morgan Housel","c":"business","img":"https://covers.openlibrary.org/b/isbn/0857197681-L.jpg","fav":false,"sec":"read"},{"t":"The Drudge Revolution","a":"Matthew Lysiak","c":"business","img":"https://covers.openlibrary.org/b/olid/OL32814132M-L.jpg","fav":false,"sec":"read"},{"t":"Grant","a":"Ron Chernow","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/0143110632-L.jpg","fav":false,"sec":"read"},{"t":"Wild","a":"Cheryl Strayed","c":"biography","img":"https://covers.openlibrary.org/b/isbn/0307476073-L.jpg","fav":false,"sec":"read"},{"t":"Call Me Ted","a":"Ted Turner","c":"biography business","img":"https://images-na.ssl-images-amazon.com/images/P/0446581895.01.L.jpg","fav":true,"sec":"read"},{"t":"Trust Me, I'm Lying","a":"Ryan Holiday","c":"business","img":"https://covers.openlibrary.org/b/olid/OL32920891M-L.jpg","fav":false,"sec":"read"},{"t":"The Messy Middle","a":"Scott Belsky","c":"business","img":"https://covers.openlibrary.org/b/olid/OL38814442M-L.jpg","fav":false,"sec":"read"},{"t":"Super Pumped","a":"Mike Isaac","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/0393652246-L.jpg","fav":false,"sec":"read"},{"t":"The Ride of a Lifetime","a":"Robert Iger","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/0399592091-L.jpg","fav":false,"sec":"read"},{"t":"1491","a":"Charles C. Mann","c":"history","img":"https://covers.openlibrary.org/b/isbn/1400032059-L.jpg","fav":false,"sec":"read"},{"t":"Under and Alone","a":"William Queen","c":"biography","img":"https://covers.openlibrary.org/b/isbn/0812969529-L.jpg","fav":false,"sec":"read"},{"t":"Surely You're Joking, Mr. Feynman!","a":"Richard Feynman","c":"science","img":"https://covers.openlibrary.org/b/isbn/0393316041-L.jpg","fav":false,"sec":"read"},{"t":"Only the Paranoid Survive","a":"Andrew Grove","c":"business","img":"https://covers.openlibrary.org/b/isbn/0385483821-L.jpg","fav":false,"sec":"read"},{"t":"Team of Rivals","a":"Doris Kearns Goodwin","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/0743270754-L.jpg","fav":false,"sec":"read"},{"t":"How to Change Your Mind","a":"Michael Pollan","c":"science","img":"https://covers.openlibrary.org/b/isbn/0735224153-L.jpg","fav":false,"sec":"read"},{"t":"What You Do Is Who You Are","a":"Ben Horowitz","c":"business","img":"https://covers.openlibrary.org/b/olid/OL28653367M-L.jpg","fav":false,"sec":"read"},{"t":"Humor, Seriously","a":"Jennifer Aaker","c":"business","img":"https://covers.openlibrary.org/b/isbn/0593135288-L.jpg","fav":false,"sec":"read"},{"t":"Total Recall","a":"Arnold Schwarzenegger","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/1451662440-L.jpg","fav":false,"sec":"read"},{"t":"Where the Crawdads Sing","a":"Delia Owens","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0735219095-L.jpg","fav":false,"sec":"read"},{"t":"Stealing Fire","a":"Steven Kotler","c":"science","img":"https://covers.openlibrary.org/b/olid/OL27407912M-L.jpg","fav":false,"sec":"read"},{"t":"Indistractable","a":"Nir Eyal","c":"business","img":"https://covers.openlibrary.org/b/isbn/194883653X-L.jpg","fav":false,"sec":"read"},{"t":"Managing Oneself","a":"Peter Drucker","c":"business","img":"https://covers.openlibrary.org/b/olid/OL27384948M-L.jpg","fav":false,"sec":"read"},{"t":"The Score Takes Care of Itself","a":"Bill Walsh","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/1591843472-L.jpg","fav":false,"sec":"read"},{"t":"To Sell is Human","a":"Daniel Pink","c":"business","img":"https://covers.openlibrary.org/b/isbn/1594631905-L.jpg","fav":false,"sec":"read"},{"t":"The Oxygen Advantage","a":"Patrick McKeown","c":"science","img":"https://covers.openlibrary.org/b/olid/OL27191514M-L.jpg","fav":false,"sec":"read"},{"t":"Radical Candor","a":"Kim Scott","c":"business","img":"https://covers.openlibrary.org/b/olid/OL26393338M-L.jpg","fav":false,"sec":"read"},{"t":"Measure What Matters","a":"John Doerr","c":"business","img":"https://covers.openlibrary.org/b/isbn/0525536221-L.jpg","fav":false,"sec":"read"},{"t":"The Everything Store","a":"Brad Stone","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/0316219266-L.jpg","fav":false,"sec":"read"},{"t":"Top of Mind","a":"John Hall","c":"business","img":"https://covers.openlibrary.org/b/olid/OL33342591M-L.jpg","fav":false,"sec":"read"},{"t":"Trillion Dollar Coach","a":"Eric Schmidt","c":"business","img":"https://covers.openlibrary.org/b/isbn/0062839268-L.jpg","fav":false,"sec":"read"},{"t":"The Dichotomy of Leadership","a":"Jocko Willink","c":"business","img":"https://covers.openlibrary.org/b/olid/OL28254610M-L.jpg","fav":false,"sec":"read"},{"t":"The Ascent of Money","a":"Niall Ferguson","c":"history business","img":"https://covers.openlibrary.org/b/isbn/0143036343-L.jpg","fav":true,"sec":"read"},{"t":"Principles","a":"Ray Dalio","c":"business","img":"https://covers.openlibrary.org/b/isbn/1501124021-L.jpg","fav":false,"sec":"read"},{"t":"The Challenger Sale","a":"Matthew Dixon","c":"business","img":"https://images-na.ssl-images-amazon.com/images/P/1591844355.01.L.jpg","fav":true,"sec":"read"},{"t":"Bad Blood","a":"John Carreyrou","c":"business","img":"https://covers.openlibrary.org/b/isbn/152473165X-L.jpg","fav":false,"sec":"read"},{"t":"Genius Foods","a":"Max Lugavere","c":"science","img":"https://covers.openlibrary.org/b/olid/OL34549135M-L.jpg","fav":false,"sec":"read"},{"t":"Originals","a":"Adam Grant","c":"business","img":"https://covers.openlibrary.org/b/isbn/0525429565-L.jpg","fav":false,"sec":"read"},{"t":"Blitzscaling","a":"Reid Hoffman","c":"business","img":"https://covers.openlibrary.org/b/isbn/1524761419-L.jpg","fav":false,"sec":"read"},{"t":"From Impossible to Inevitable","a":"Aaron Ross","c":"business","img":"https://covers.openlibrary.org/b/isbn/1119166713-L.jpg","fav":false,"sec":"read"},{"t":"21 Lessons for the 21st Century","a":"Yuval Noah Harari","c":"philosophy","img":"https://covers.openlibrary.org/b/isbn/0525512179-L.jpg","fav":false,"sec":"read"},{"t":"Educated","a":"Tara Westover","c":"biography history","img":"https://covers.openlibrary.org/b/isbn/0399590501-L.jpg","fav":false,"sec":"read"},{"t":"Fooled by Randomness","a":"Nassim Taleb","c":"business","img":"https://covers.openlibrary.org/b/isbn/0812975219-L.jpg","fav":false,"sec":"read"},{"t":"Win Bigly","a":"Scott Adams","c":"business","img":"https://covers.openlibrary.org/b/olid/OL27380243M-L.jpg","fav":false,"sec":"read"},{"t":"The Hard Thing About Hard Things","a":"Ben Horowitz","c":"business","img":"https://images-na.ssl-images-amazon.com/images/P/0062273205.01.L.jpg","fav":true,"sec":"read"},{"t":"Behind the Cloud","a":"Marc Benioff","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/0470521163-L.jpg","fav":false,"sec":"read"},{"t":"Difficult Conversations","a":"Douglas Stone","c":"business","img":"https://covers.openlibrary.org/b/isbn/0143118447-L.jpg","fav":false,"sec":"read"},{"t":"Sapiens","a":"Yuval Noah Harari","c":"history philosophy","img":"https://covers.openlibrary.org/b/isbn/0062316095-L.jpg","fav":false,"sec":"read"},{"t":"The Only Sales Guide You'll Ever Need","a":"Anthony Iannarino","c":"business","img":"https://books.google.com/books/content?id=kTYlDQAAQBAJ&printsec=frontcover&img=1&zoom=3","fav":false,"sec":"read"},{"t":"Never Split the Difference","a":"Chris Voss","c":"business","img":"https://images-na.ssl-images-amazon.com/images/P/0062407805.01.L.jpg","fav":true,"sec":"read"},{"t":"Benjamin Franklin: An American Life","a":"Walter Isaacson","c":"biography history","img":"https://covers.openlibrary.org/b/olid/OL3690676M-L.jpg","fav":false,"sec":"read"},{"t":"Superintelligence","a":"Nick Bostrom","c":"science","img":"https://covers.openlibrary.org/b/isbn/0199678111-L.jpg","fav":false,"sec":"read"},{"t":"The Slight Edge","a":"Jeff Olson","c":"business","img":"https://covers.openlibrary.org/b/olid/OL26842952M-L.jpg","fav":false,"sec":"read"},{"t":"Black Box Thinking","a":"Matthew Syed","c":"business","img":"https://covers.openlibrary.org/b/isbn/1473613809-L.jpg","fav":false,"sec":"read"},{"t":"Shoe Dog","a":"Phil Knight","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/1501135910-L.jpg","fav":false,"sec":"read"},{"t":"The Alchemist","a":"Paulo Coelho","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0062315005-L.jpg","fav":false,"sec":"read"},{"t":"What to Think About Machines That Think","a":"John Brockman","c":"science","img":"https://covers.openlibrary.org/b/olid/OL27194292M-L.jpg","fav":false,"sec":"read"},{"t":"Thank You for Being Late","a":"Thomas Friedman","c":"business","img":"https://covers.openlibrary.org/b/isbn/0374273537-L.jpg","fav":false,"sec":"read"},{"t":"1776","a":"David McCullough","c":"history","img":"https://covers.openlibrary.org/b/isbn/0743226712-L.jpg","fav":false,"sec":"read"},{"t":"The Code of the Extraordinary Mind","a":"Vishen Lakhiani","c":"business","img":"https://covers.openlibrary.org/b/isbn/1623367085-L.jpg","fav":false,"sec":"read"},{"t":"Zero to One","a":"Peter Thiel","c":"business","img":"https://covers.openlibrary.org/b/isbn/0804139296-L.jpg","fav":false,"sec":"read"},{"t":"Venture Deals","a":"Brad Feld","c":"business","img":"https://covers.openlibrary.org/b/isbn/1119259754-L.jpg","fav":false,"sec":"read"},{"t":"The Boys in the Boat","a":"Daniel James Brown","c":"history","img":"https://images-na.ssl-images-amazon.com/images/P/0143125478.01.L.jpg","fav":true,"sec":"read"},{"t":"Grit","a":"Angela Duckworth","c":"science","img":"https://covers.openlibrary.org/b/isbn/1501111108-L.jpg","fav":false,"sec":"read"},{"t":"Deep Work","a":"Cal Newport","c":"business","img":"https://covers.openlibrary.org/b/isbn/1455586692-L.jpg","fav":false,"sec":"read"},{"t":"The Like Switch","a":"Jack Schafer","c":"science","img":"https://covers.openlibrary.org/b/isbn/1476754489-L.jpg","fav":false,"sec":"read"},{"t":"Mastering the VC Game","a":"Jeffrey Bussgang","c":"business","img":"https://covers.openlibrary.org/b/olid/OL24023021M-L.jpg","fav":false,"sec":"read"},{"t":"The Social Animal","a":"David Brooks","c":"science","img":"https://covers.openlibrary.org/b/isbn/0812979370-L.jpg","fav":false,"sec":"read"},{"t":"Sam Walton: Made in America","a":"Sam Walton","c":"biography business","img":"https://covers.openlibrary.org/b/isbn/0553562835-L.jpg","fav":false,"sec":"read"},{"t":"When I Stop Talking, You'll Know I'm Dead","a":"Jerry Weintraub","c":"business","img":"https://covers.openlibrary.org/b/olid/OL23962610M-L.jpg","fav":false,"sec":"read"},{"t":"Dead Companies Walking","a":"Scott Fearon","c":"business","img":"https://covers.openlibrary.org/b/isbn/1137279648-L.jpg","fav":false,"sec":"read"},{"t":"Industrial Revolutionaries","a":"Gavin Weightman","c":"history","img":"https://covers.openlibrary.org/b/isbn/0802144845-L.jpg","fav":false,"sec":"read"},{"t":"The One Thing","a":"Gary Keller","c":"business","img":"https://covers.openlibrary.org/b/isbn/1885167776-L.jpg","fav":false,"sec":"read"},{"t":"1984","a":"George Orwell","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0451524934-L.jpg","fav":false,"sec":"read"},{"t":"The Power of Habit","a":"Charles Duhigg","c":"science","img":"https://covers.openlibrary.org/b/isbn/081298160X-L.jpg","fav":false,"sec":"read"},{"t":"Building an Empire","a":"Brian Carruthers","c":"business","img":"https://covers.openlibrary.org/b/isbn/1628654643-L.jpg","fav":false,"sec":"read"},{"t":"Beating the Street","a":"Peter Lynch","c":"business","img":"https://covers.openlibrary.org/b/isbn/0671891634-L.jpg","fav":false,"sec":"read"},{"t":"Blink","a":"Malcolm Gladwell","c":"science","img":"https://covers.openlibrary.org/b/isbn/0316010669-L.jpg","fav":false,"sec":"read"},{"t":"The 4-Hour Body","a":"Timothy Ferriss","c":"science","img":"https://covers.openlibrary.org/b/isbn/030746363X-L.jpg","fav":false,"sec":"read"},{"t":"Rich Dad Poor Dad","a":"Robert Kiyosaki","c":"business","img":"https://covers.openlibrary.org/b/isbn/1612680194-L.jpg","fav":false,"sec":"read"},{"t":"Think and Grow Rich","a":"Napoleon Hill","c":"business","img":"https://images-na.ssl-images-amazon.com/images/P/1585424331.01.L.jpg","fav":true,"sec":"read"},{"t":"When Affirmative Action Was White","a":"Ira Katznelson","c":"history","img":"https://covers.openlibrary.org/b/isbn/0393328511-L.jpg","fav":false,"sec":"read"},{"t":"How to Win Friends & Influence People","a":"Dale Carnegie","c":"business","img":"https://covers.openlibrary.org/b/isbn/0671027034-L.jpg","fav":false,"sec":"read"},{"t":"For Discrimination","a":"Randall Kennedy","c":"history","img":"https://covers.openlibrary.org/b/olid/OL27512321M-L.jpg","fav":false,"sec":"read"},{"t":"The 4-Hour Workweek","a":"Timothy Ferriss","c":"business","img":"https://covers.openlibrary.org/b/isbn/0307465357-L.jpg","fav":false,"sec":"read"},{"t":"The Business of the 21st Century","a":"Robert Kiyosaki","c":"business","img":"https://covers.openlibrary.org/b/olid/OL27202773M-L.jpg","fav":false,"sec":"read"},{"t":"To Kill a Mockingbird","a":"Harper Lee","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0060935464-L.jpg","fav":false,"sec":"read"},{"t":"The Great Gatsby","a":"F. Scott Fitzgerald","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0743273567-L.jpg","fav":false,"sec":"read"},{"t":"A Long Way Gone","a":"Ishmael Beah","c":"biography history","img":"https://images-na.ssl-images-amazon.com/images/P/0374531269.01.L.jpg","fav":true,"sec":"read"},{"t":"The Sun Also Rises","a":"Ernest Hemingway","c":"fiction","img":"https://images-na.ssl-images-amazon.com/images/P/0743297334.01.L.jpg","fav":true,"sec":"read"},{"t":"Lord of the Flies","a":"William Golding","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0399501487-L.jpg","fav":false,"sec":"read"},{"t":"The Book Thief","a":"Markus Zusak","c":"fiction","img":"https://covers.openlibrary.org/b/isbn/0375842209-L.jpg","fav":false,"sec":"read"}];
+
+/* ------- constants ------- */
+const H_BASE = 250, GAP = 3, FOCUS_PAD = 64, SHELF_BOTTOM = 336;
+const PALETTE = [
+  ['#1c1c1c','#f2efe9'], ['#b8433a','#fdf6ee'], ['#d97c3f','#231a12'],
+  ['#ece4d2','#3a342a'], ['#8a9b7e','#1f241b'], ['#4a5568','#f0f2f5'],
+  ['#a48a64','#241d12'], ['#37455c','#e8ecf3'], ['#7a3b3b','#f5ebe4'],
+  ['#5b5f97','#eef0fa'], ['#2f4f43','#e4efe9'], ['#c9a227','#241f0c']
+];
+function hash(s){ let h=0; for (let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
+
+/* per-book geometry + colors */
+BOOKS.forEach(b => {
+  const h = hash(b.t + b.a);
+  b.H = H_BASE - 10 + (h % 26);            // 240–266
+  b.W = Math.round(b.H * 0.655);           // cover width
+  b.T = 24 + (h % 19);                     // thickness 24–42
+  const [bg, fg] = PALETTE[h % PALETTE.length];
+  b.bg = bg; b.fg = fg;
+  // derive a link from the cover URL
+  let m;
+  if ((m = b.img.match(/isbn\/([0-9Xx]+)-/))) b.link = 'https://www.goodreads.com/search?q=' + m[1];
+  else if ((m = b.img.match(/images\/P\/([A-Z0-9]+)\./i))) b.link = 'https://www.amazon.com/dp/' + m[1];
+  else b.link = 'https://www.google.com/search?q=' + encodeURIComponent(b.t + ' ' + b.a + ' book');
+});
+
+const stage = document.getElementById('stage');
+const shelf = document.getElementById('shelf');
+const els = [];
+
+/* ------- build DOM ------- */
+BOOKS.forEach((b, i) => {
+  const d = document.createElement('div');
+  d.className = 'b';
+  d.dataset.i = i;
+  const W = b.W, H = b.H, T = b.T;
+  const face = (cls, w, h, tf, extra) =>
+    `<div class="f ${cls}" style="width:${w}px;height:${h}px;margin-left:${-w/2}px;margin-top:${-h/2}px;transform:${tf};${extra||''}"></div>`;
+  d.innerHTML =
+    face('front', W, H, `translateZ(${T/2}px)`) +
+    face('back',  W, H, `rotateY(180deg) translateZ(${T/2}px)`, `background:${shade(b.bg,-18)};`) +
+    face('spine', T, H, `rotateY(-90deg) translateZ(${W/2}px)`, `background:${b.bg};color:${b.fg};`) +
+    face('edge',  T, H, `rotateY(90deg) translateZ(${W/2}px)`) +
+    face('etop',  W, T, `rotateX(90deg) translateZ(${H/2}px)`) +
+    face('ebot',  W, T, `rotateX(-90deg) translateZ(${H/2}px)`);
+  const front = d.querySelector('.front');
+  front.innerHTML = `<img alt="${esc(b.t)}" draggable="false"><span class="shine"></span>
+    <span class="fallback" style="background:${b.bg};color:${b.fg}"><span class="ft">${esc(b.t)}</span><span class="fa">${esc(b.a)}</span></span>`;
+  const spine = d.querySelector('.spine');
+  spine.innerHTML = `<span class="st">${esc(b.t)}</span><span class="sa">${esc(shortAuthor(b.a))}</span>`;
+  if (b.fav) d.insertAdjacentHTML('beforeend',
+    `<div class="f fav" style="transform:translate(${-W/2+14-10}px,${-H/2+14-10}px) translateZ(${T/2+1}px)">★</div>`);
+  shelf.appendChild(d);
+  els.push(d);
+});
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function shortAuthor(a){ const p=a.split(' '); return p.length>1 ? p[p.length-1] : a; }
+function shade(hex, amt){
+  const n = parseInt(hex.slice(1),16);
+  const r = Math.max(0,Math.min(255,(n>>16)+amt)), g = Math.max(0,Math.min(255,((n>>8)&255)+amt)), bl = Math.max(0,Math.min(255,(n&255)+amt));
+  return `rgb(${r},${g},${bl})`;
+}
+
+/* ------- image lazy loading ------- */
+const loaded = new Set();
+function loadNear(center){
+  for (let i = Math.max(0,center-14); i <= Math.min(BOOKS.length-1,center+14); i++){
+    if (loaded.has(i)) continue;
+    loaded.add(i);
+    const img = els[i].querySelector('img');
+    const front = els[i].querySelector('.front');
+    img.onload = () => { if (img.naturalWidth > 2) img.classList.add('ok'); else front.classList.add('nofallimg'); };
+    img.onerror = () => front.classList.add('nofallimg');
+    img.src = BOOKS[i].img;
+  }
+}
+
+/* ------- layout ------- */
+let focus = 0, browsing = false, inspecting = false;
+
+function slotW(i, open){ return (open && i===focus) ? BOOKS[i].W : BOOKS[i].T; }
+
+function layout(open){
+  // open=true → focused book turned cover-out
+  let x = 0;
+  const centers = [];
+  for (let i = 0; i < BOOKS.length; i++){
+    if (open && i === focus) x += FOCUS_PAD;
+    const w = slotW(i, open);
+    centers.push(x + w/2);
+    x += w + GAP;
+    if (open && i === focus) x += FOCUS_PAD;
+  }
+  const offset = -centers[focus];
+  for (let i = 0; i < BOOKS.length; i++){
+    const b = BOOKS[i];
+    const ry = (open && i === focus) ? 0 : 90;
+    const y = SHELF_BOTTOM - b.H/2;
+    const z = (open && i === focus) ? 40 : 0;
+    els[i].style.transform =
+      `translateX(${centers[i] + offset}px) translateY(${y}px) translateZ(${z}px) rotateY(${ry}deg)`;
+    els[i].classList.toggle('faded', inspecting && i !== focus);
+  }
+  loadNear(focus);
+}
+
+/* ------- meta ------- */
+const $ = id => document.getElementById(id);
+function pad(n){ return String(n+1).padStart(2,'0'); }
+function chipsFor(b){
+  let h = '';
+  if (b.sec === 'reading') h += `<span class="chip reading">Reading${b.p ? ' · '+b.p+'%' : ''}</span>`;
+  if (b.sec === 'next') h += `<span class="chip">Up next</span>`;
+  if (b.fav) h += `<span class="chip star">★ Favorite</span>`;
+  b.c.split(' ').forEach(c => h += `<span class="chip">${c}</span>`);
+  return h;
+}
+function updateMeta(){
+  const b = BOOKS[focus];
+  $('counter').textContent = pad(focus) + ' / ' + BOOKS.length;
+  $('mtitle').textContent = b.t;
+  $('mauthor').textContent = b.a;
+  $('mrow').innerHTML = chipsFor(b) + `<button class="inspect-btn" onclick="openInspect()">Inspect ↗</button>`;
+  $('pfill').style.width = (focus/(BOOKS.length-1)*100) + '%';
+}
+
+/* ------- interactions ------- */
+function setFocus(i, open=true){
+  focus = Math.max(0, Math.min(BOOKS.length-1, i));
+  layout(open);
+  updateMeta();
+}
+
+document.querySelector('.navbtn.prev').onclick = () => setFocus(focus-1);
+document.querySelector('.navbtn.next').onclick = () => setFocus(focus+1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && inspecting) closeInspect();
+  if (inspecting) return;
+  if (e.key === 'ArrowLeft') setFocus(focus-1);
+  if (e.key === 'ArrowRight') setFocus(focus+1);
+});
+
+/* drag browse + orbit */
+let down = null;
+stage.addEventListener('pointerdown', e => {
+  down = { x:e.clientX, y:e.clientY, focus, moved:false, t:Date.now() };
+  if (inspecting){ orbit.dragging = true; orbit.px = e.clientX; orbit.py = e.clientY; }
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove', e => {
+  if (!down) return;
+  const dx = e.clientX - down.x, dy = e.clientY - down.y;
+  if (inspecting){
+    if (orbit.dragging){
+      orbit.ry += (e.clientX - orbit.px) * 0.5;
+      orbit.rx = Math.max(-75, Math.min(75, orbit.rx - (e.clientY - orbit.py) * 0.5));
+      orbit.px = e.clientX; orbit.py = e.clientY;
+      applyOrbit();
+    }
+    return;
+  }
+  if (!down.moved && Math.abs(dx) > 6){ down.moved = true; browsing = true; stage.classList.add('dragging'); layout(false); }
+  if (down.moved){
+    const step = 30;
+    setFocusLive(down.focus - Math.round(dx/step));
+  }
+});
+function setFocusLive(i){
+  const ni = Math.max(0, Math.min(BOOKS.length-1, i));
+  if (ni !== focus){ focus = ni; layout(false); updateMeta(); }
+}
+stage.addEventListener('pointerup', e => {
+  if (!down) return;
+  const wasDrag = down.moved;
+  down = null;
+  orbit.dragging = false;
+  if (inspecting) return;
+  stage.classList.remove('dragging');
+  if (wasDrag){ browsing = false; layout(true); return; }
+  // click: find book under pointer
+  const el = document.elementFromPoint(e.clientX, e.clientY)?.closest('.b');
+  if (el){
+    const i = +el.dataset.i;
+    if (i === focus) openInspect();
+    else setFocus(i);
+  }
+});
+stage.addEventListener('pointercancel', () => { down = null; orbit.dragging = false; stage.classList.remove('dragging'); if(!inspecting) layout(true); });
+
+/* ------- inspect (pick up) ------- */
+const orbit = { rx:-4, ry:24, z:150, dragging:false, px:0, py:0 };
+function applyOrbit(){
+  const b = BOOKS[focus], el = els[focus];
+  const stageW = stage.clientWidth;
+  const panelVisible = window.innerWidth > 700;
+  const cx = panelVisible ? stageW*0.34 - stageW/2 : 0;
+  el.style.transform =
+    `translateX(${cx}px) translateY(${SHELF_BOTTOM - b.H/2 - 60}px) translateZ(${orbit.z}px) rotateX(${orbit.rx}deg) rotateY(${orbit.ry}deg)`;
+}
+function openInspect(){
+  if (inspecting) return;
+  inspecting = true;
+  orbit.rx = -4; orbit.ry = 24; orbit.z = 150;
+  document.body.classList.add('inspecting');
+  const b = BOOKS[focus];
+  $('it').textContent = b.t;
+  $('ia').textContent = b.a;
+  $('ichips').innerHTML = chipsFor(b);
+  $('ilink').href = b.link;
+  $('ilink').textContent = b.link.includes('goodreads') ? 'View on Goodreads ↗' : b.link.includes('amazon') ? 'View on Amazon ↗' : 'Find this book ↗';
+  layout(true);
+  applyOrbit();
+}
+function closeInspect(){
+  inspecting = false;
+  document.body.classList.remove('inspecting');
+  layout(true);
+}
+document.querySelector('.backshelf').onclick = closeInspect;
+stage.addEventListener('wheel', e => {
+  if (!inspecting) return;
+  e.preventDefault();
+  orbit.z = Math.max(-40, Math.min(420, orbit.z - e.deltaY * 0.5));
+  applyOrbit();
+}, { passive:false });
+
+/* ------- init ------- */
+setFocus(0);
+window.addEventListener('resize', () => { if (inspecting) applyOrbit(); });
+</script>
+</body>
+</html>
