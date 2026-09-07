@@ -213,10 +213,132 @@
         .filter-btn[data-filter="favorites"] { display: inline-flex; align-items: center; gap: 4px; }
         .filter-btn[data-filter="favorites"]::before { content: '★'; color: #d4a574; }
         .filter-btn[data-filter="favorites"].active::before { color: white; }
+
+        /* ---------- Shelf / Grid view toggle ---------- */
+        .filters-right { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+        .view-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; padding: 2px; background: var(--surface); }
+        .view-btn {
+            font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 500;
+            padding: 4px 11px; border: none; border-radius: 4px;
+            background: transparent; color: var(--muted); cursor: pointer; transition: all 0.2s;
+        }
+        .view-btn:hover { color: var(--text); }
+        .view-btn.active { background: var(--text); color: #fff; }
+        .view-grid #shelfView { display: none; }
+        .view-shelf #gridView { display: none; }
+
+        /* ---------- 3D shelf view ---------- */
+        .sv { margin-bottom: 24px; }
+        .sv-hint { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--muted); margin: -12px 0 4px; }
+        .sv-wrap { position: relative; }
+        .sv-stage {
+            --s: 1;
+            position: relative; height: calc(420px * var(--s)); margin-top: 8px;
+            perspective: calc(1400px * var(--s)); perspective-origin: 50% 42%;
+            touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none;
+        }
+        .sv-stage.dragging { cursor: grabbing; }
+        .sv.inspecting .sv-stage { touch-action: none; }
+        .sv-scene {
+            position: absolute; left: 50%; top: 0; width: 0; height: 100%;
+            transform: scale(var(--s)); transform-origin: 0 0; transform-style: preserve-3d;
+        }
+        .sv-shelf { position: absolute; left: 0; top: 0; width: 0; height: 100%; transform-style: preserve-3d; }
+        .sv-board {
+            position: absolute; left: -40px; right: -40px;
+            top: calc(332px * var(--s)); height: calc(14px * var(--s));
+            background: linear-gradient(#efece7, #e2ded7); border-radius: 2px;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 18px 30px -12px rgba(30,25,20,0.18);
+            transition: opacity 0.35s ease;
+        }
+        .sv-board::after {
+            content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 26px;
+            background: linear-gradient(rgba(30,25,20,0.07), transparent);
+        }
+        .sv-book {
+            position: absolute; left: 0; top: 0; transform-style: preserve-3d;
+            transition: transform 0.55s cubic-bezier(0.22,0.9,0.3,1), opacity 0.4s ease;
+            will-change: transform;
+        }
+        .sv-book.faded { opacity: 0.1; pointer-events: none; }
+        .sv-face { position: absolute; left: 50%; top: 50%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .sv-front { background: var(--surface); overflow: hidden; border-radius: 2px 4px 4px 2px; }
+        .sv-front img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.35s ease; }
+        .sv-front img.ok { opacity: 1; }
+        .sv-shine {
+            position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+            background: linear-gradient(100deg, rgba(255,255,255,0.18) 0%, transparent 22%, transparent 78%, rgba(0,0,0,0.12) 100%);
+        }
+        .sv-fallback { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: space-between; padding: 14px 10px; text-align: center; }
+        .sv-front.noimg .sv-fallback { display: flex; }
+        .sv-fallback .ft { font-family: 'Newsreader', serif; font-size: 0.9rem; line-height: 1.25; }
+        .sv-fallback .fa { font-family: 'Inter', sans-serif; font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+        .sv-back { border-radius: 4px 2px 2px 4px; }
+        .sv-spine { display: flex; flex-direction: column; align-items: center; padding: 10px 0 8px; border-radius: 2px; overflow: hidden; }
+        .sv-spine .st { writing-mode: vertical-rl; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.62rem; letter-spacing: 0.04em; max-height: 78%; overflow: hidden; white-space: nowrap; }
+        .sv-spine .sa { writing-mode: vertical-rl; font-family: 'Inter', sans-serif; font-size: 0.5rem; opacity: 0.7; margin-top: auto; max-height: 18%; overflow: hidden; white-space: nowrap; }
+        .sv-edge { background: repeating-linear-gradient(90deg, #f6f2e9 0px, #f6f2e9 1.5px, #e9e4d8 2.5px); }
+        .sv-top { background: repeating-linear-gradient(0deg, #f6f2e9 0px, #f6f2e9 1.5px, #e9e4d8 2.5px); border-radius: 1px; }
+        .sv-bottom { background: #efeadf; }
+        .sv-star {
+            width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: #d4a574; background: #fff; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .sv-nav {
+            position: absolute; top: calc(150px * var(--s)); z-index: 5;
+            width: 36px; height: 36px; border-radius: 8px;
+            background: var(--bg); border: 1px solid var(--border);
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text);
+            cursor: pointer; opacity: 0; transition: opacity 0.25s, border-color 0.2s;
+        }
+        .sv-stage:hover .sv-nav { opacity: 1; }
+        .sv-nav:hover { border-color: var(--accent); color: var(--accent); }
+        .sv-prev { left: 6px; } .sv-next { right: 6px; }
+        @media (hover: none) { .sv-nav { opacity: 1; } }
+        .sv-meta { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-top: 18px; min-height: 96px; transition: opacity 0.35s ease; }
+        .sv-meta .left { max-width: 70%; }
+        .sv-counter { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.12em; }
+        .sv-title { font-family: 'Newsreader', serif; font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em; margin-top: 2px; line-height: 1.2; }
+        .sv-author { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+        .sv-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .sv-chip { font-family: 'Inter', sans-serif; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; }
+        .sv-chip.reading { color: var(--accent); border-color: var(--accent); }
+        .sv-chip.star { color: #b98a55; border-color: #e2cbaa; }
+        .sv-inspect { font-family: 'Inter', sans-serif; font-size: 0.72rem; padding: 6px 12px; background: transparent; border: 1px solid var(--border); border-radius: 5px; color: var(--text); cursor: pointer; transition: all 0.2s; }
+        .sv-inspect:hover { border-color: var(--accent); color: var(--accent); }
+        .sv-progress { flex: 1; max-width: 220px; align-self: center; height: 2px; background: var(--border); border-radius: 1px; position: relative; }
+        .sv-progress span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 1px; transition: width 0.3s ease; }
+        .sv-panel {
+            position: absolute; right: 0; top: 30px; width: 320px; max-width: 44%;
+            opacity: 0; pointer-events: none; transform: translateX(16px);
+            transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+            border-left: 1px solid var(--border); padding-left: 28px;
+        }
+        .sv.inspecting .sv-panel { opacity: 1; pointer-events: auto; transform: none; }
+        .sv-back-btn { font-family: 'Inter', sans-serif; font-size: 0.72rem; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 14px; }
+        .sv-back-btn:hover { color: var(--accent); }
+        .sv-panel .sv-title { font-size: 1.5rem; }
+        .sv-panel .sv-row { margin-top: 12px; }
+        .sv-link { display: inline-block; margin-top: 18px; font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+        .sv-keys { font-family: 'Inter', sans-serif; font-size: 0.65rem; color: #aaa; margin-top: 46px; line-height: 1.6; }
+        .sv.inspecting .sv-meta, .sv.inspecting .sv-board { opacity: 0; pointer-events: none; }
+        .sv.inspecting .sv-stage .sv-nav, .sv.inspecting .sv-stage:hover .sv-nav { opacity: 0; pointer-events: none; }
+        .sv-empty { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--muted); padding: 40px 0; text-align: center; }
+        @media (max-width: 900px) { .sv-stage { --s: 0.8; } }
+        @media (max-width: 700px) {
+            .sv-stage { --s: 0.62; }
+            .sv-panel { position: static; width: 100%; max-width: 100%; border-left: none; padding-left: 0; margin-top: 8px; display: none; transform: none; }
+            .sv.inspecting .sv-panel { display: block; }
+            .sv-keys { margin-top: 20px; }
+            .sv-title { font-size: 1.15rem; }
+            .sv-meta .left { max-width: 100%; }
+            .sv-progress { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) { .sv-book, .sv-panel, .sv-meta { transition: none; } }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container view-shelf" id="bookshelfPage">
         <div class="header">
             <a href="index.html" class="back-link">← Back</a>
             <h1>Bookshelf</h1>
@@ -233,8 +355,46 @@
                 <button class="filter-btn" data-filter="science">Science</button>
                 <button class="filter-btn" data-filter="philosophy">Philosophy</button>
             </div>
-            <div class="book-count"><span>135</span> books</div>
+            <div class="filters-right">
+                <div class="view-toggle" role="tablist" aria-label="Bookshelf view">
+                    <button class="view-btn active" data-view="shelf" role="tab" aria-selected="true">Shelf</button>
+                    <button class="view-btn" data-view="grid" role="tab" aria-selected="false">Grid</button>
+                </div>
+                <div class="book-count"><span>135</span> books</div>
+            </div>
         </div>
+
+        <section class="sv" id="shelfView" aria-label="3D bookshelf">
+            <p class="sv-hint">Drag the shelf to browse · click a book to pick it up</p>
+            <div class="sv-wrap">
+                <div class="sv-stage" id="svStage">
+                    <button class="sv-nav sv-prev" type="button" aria-label="Previous book">←</button>
+                    <div class="sv-board"></div>
+                    <div class="sv-scene"><div class="sv-shelf" id="svShelf"></div></div>
+                    <button class="sv-nav sv-next" type="button" aria-label="Next book">→</button>
+                </div>
+                <div class="sv-panel" id="svPanel">
+                    <button class="sv-back-btn" type="button" id="svBack">← Back to shelf</button>
+                    <div class="sv-title" id="svPTitle"></div>
+                    <div class="sv-author" id="svPAuthor"></div>
+                    <div class="sv-row" id="svPChips"></div>
+                    <a class="sv-link" id="svPLink" target="_blank" rel="noopener">Find this book ↗</a>
+                    <div class="sv-keys">drag to orbit · scroll to zoom · esc to close</div>
+                </div>
+            </div>
+            <div class="sv-meta" id="svMeta">
+                <div class="left">
+                    <div class="sv-counter" id="svCounter"></div>
+                    <div class="sv-title" id="svTitle"></div>
+                    <div class="sv-author" id="svAuthor"></div>
+                    <div class="sv-row" id="svRow"></div>
+                </div>
+                <div class="sv-progress"><span id="svProgress"></span></div>
+            </div>
+            <div class="sv-empty" id="svEmpty" hidden>No books match this filter.</div>
+        </section>
+
+        <div id="gridView">
 
         <div class="currently-reading">
             <div class="section-title">Currently Reading</div>
@@ -885,6 +1045,7 @@
                 <div class="book-info"><div class="title">The Book Thief</div><div class="author">Markus Zusak</div></div>
             </div>
         </div>
+        </div><!-- /gridView -->
     </div>
 
     <script>
@@ -965,6 +1126,283 @@
                 bookCountEl.textContent = visibleCount;
             });
         });
+    </script>
+
+    <script>
+    // 3D shelf view. Builds itself from the grid markup above so the grid stays the single source of truth.
+    (function () {
+        const page = document.getElementById('bookshelfPage');
+        const shelfView = document.getElementById('shelfView');
+        const stage = document.getElementById('svStage');
+        const shelfEl = document.getElementById('svShelf');
+        const $ = id => document.getElementById(id);
+        if (!page || !stage) return;
+
+        /* ---------- geometry + palette ---------- */
+        const H_BASE = 250, GAP = 3, FOCUS_PAD = 64, SHELF_BOTTOM = 336, DRAG_STEP = 30;
+        const PALETTE = [
+            ['#1c1c1c','#f2efe9'], ['#b8433a','#fdf6ee'], ['#d97c3f','#231a12'],
+            ['#ece4d2','#3a342a'], ['#8a9b7e','#1f241b'], ['#4a5568','#f0f2f5'],
+            ['#a48a64','#241d12'], ['#37455c','#e8ecf3'], ['#7a3b3b','#f5ebe4'],
+            ['#5b5f97','#eef0fa'], ['#2f4f43','#e4efe9'], ['#c9a227','#241f0c']
+        ];
+        const hash = s => { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h); };
+        const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        const shortAuthor = a => { const p = a.split(' '); return p.length > 1 ? p[p.length - 1] : a; };
+        const shade = (hex, amt) => {
+            const n = parseInt(hex.slice(1), 16), c = v => Math.max(0, Math.min(255, v + amt));
+            return `rgb(${c(n >> 16)},${c((n >> 8) & 255)},${c(n & 255)})`;
+        };
+        const scale = () => parseFloat(getComputedStyle(stage).getPropertyValue('--s')) || 1;
+
+        /* ---------- read books from the grid ---------- */
+        const BOOKS = [...document.querySelectorAll('#gridView .book')].map(el => {
+            const img = el.querySelector('.book-cover img');
+            const src = (img ? img.getAttribute('src') : '').replace(/-M\.jpg$/, '-L.jpg');
+            const prog = el.querySelector('.progress');
+            const b = {
+                el,
+                t: (el.querySelector('.title') || {}).textContent.trim(),
+                a: (el.querySelector('.author') || { textContent: '' }).textContent.trim(),
+                c: el.dataset.category || '',
+                img: src,
+                fav: el.dataset.favorite === 'true' || !!el.querySelector('.favorite-star'),
+                sec: el.closest('.currently-reading') ? 'reading' : el.closest('.on-the-bookshelf') ? 'next' : 'read',
+                p: prog ? parseInt(prog.style.width, 10) : null
+            };
+            const h = hash(b.t + b.a);
+            b.H = H_BASE - 10 + (h % 26);
+            b.W = Math.round(b.H * 0.655);
+            b.T = 24 + (h % 19);
+            [b.bg, b.fg] = PALETTE[h % PALETTE.length];
+            let m;
+            if ((m = src.match(/isbn\/([0-9Xx]+)-/))) b.link = 'https://www.goodreads.com/search?q=' + m[1];
+            else if ((m = src.match(/images\/P\/([A-Z0-9]+)\./i))) b.link = 'https://www.amazon.com/dp/' + m[1];
+            else b.link = 'https://www.google.com/search?q=' + encodeURIComponent(b.t + ' ' + b.a + ' book');
+            return b;
+        });
+
+        /* ---------- build the 3D books ---------- */
+        BOOKS.forEach((b, i) => {
+            const node = document.createElement('div');
+            node.className = 'sv-book';
+            node.dataset.i = i;
+            const { W, H, T } = b;
+            const face = (cls, w, h, tf, extra) =>
+                `<div class="sv-face ${cls}" style="width:${w}px;height:${h}px;margin-left:${-w / 2}px;margin-top:${-h / 2}px;transform:${tf};${extra || ''}"></div>`;
+            node.innerHTML =
+                face('sv-front', W, H, `translateZ(${T / 2}px)`) +
+                face('sv-back', W, H, `rotateY(180deg) translateZ(${T / 2}px)`, `background:${shade(b.bg, -18)};`) +
+                face('sv-spine', T, H, `rotateY(-90deg) translateZ(${W / 2}px)`, `background:${b.bg};color:${b.fg};`) +
+                face('sv-edge', T, H, `rotateY(90deg) translateZ(${W / 2}px)`) +
+                face('sv-top', W, T, `rotateX(90deg) translateZ(${H / 2}px)`) +
+                face('sv-bottom', W, T, `rotateX(-90deg) translateZ(${H / 2}px)`);
+            node.querySelector('.sv-front').innerHTML =
+                `<img alt="${esc(b.t)}" draggable="false"><span class="sv-shine"></span>` +
+                `<span class="sv-fallback" style="background:${b.bg};color:${b.fg}"><span class="ft">${esc(b.t)}</span><span class="fa">${esc(b.a)}</span></span>`;
+            node.querySelector('.sv-spine').innerHTML = `<span class="st">${esc(b.t)}</span><span class="sa">${esc(shortAuthor(b.a))}</span>`;
+            if (b.fav) node.insertAdjacentHTML('beforeend',
+                `<div class="sv-face sv-star" style="transform:translate(${-W / 2 + 4}px,${-H / 2 + 4}px) translateZ(${T / 2 + 1}px)">★</div>`);
+            shelfEl.appendChild(node);
+            b.node = node;
+        });
+
+        const loaded = new Set();
+        function loadNear() {
+            for (let i = Math.max(0, focus - 14); i <= Math.min(items.length - 1, focus + 14); i++) {
+                const b = items[i];
+                if (loaded.has(b)) continue;
+                loaded.add(b);
+                const img = b.node.querySelector('img'), front = b.node.querySelector('.sv-front');
+                img.onload = () => { if (img.naturalWidth > 2) img.classList.add('ok'); else front.classList.add('noimg'); };
+                img.onerror = () => front.classList.add('noimg');
+                if (b.img) img.src = b.img; else front.classList.add('noimg');
+            }
+        }
+
+        /* ---------- layout ---------- */
+        let items = BOOKS.slice(), focus = 0, inspecting = false;
+
+        function layout(open) {
+            const visible = new Set(items);
+            BOOKS.forEach(b => { if (!visible.has(b)) b.node.style.display = 'none'; });
+            let x = 0;
+            const centers = [];
+            items.forEach((b, i) => {
+                const isFocus = open && i === focus;
+                if (isFocus) x += FOCUS_PAD;
+                const w = isFocus ? b.W : b.T;
+                centers.push(x + w / 2);
+                x += w + GAP;
+                if (isFocus) x += FOCUS_PAD;
+            });
+            const offset = centers.length ? -centers[focus] : 0;
+            items.forEach((b, i) => {
+                const isFocus = open && i === focus;
+                b.node.style.display = '';
+                b.node.style.transform =
+                    `translateX(${centers[i] + offset}px) translateY(${SHELF_BOTTOM - b.H / 2}px) translateZ(${isFocus ? 40 : 0}px) rotateY(${isFocus ? 0 : 90}deg)`;
+                b.node.classList.toggle('faded', inspecting && i !== focus);
+            });
+            loadNear();
+        }
+
+        const pad = n => String(n + 1).padStart(2, '0');
+        function chips(b) {
+            let h = '';
+            if (b.sec === 'reading') h += `<span class="sv-chip reading">Reading${b.p ? ' · ' + b.p + '%' : ''}</span>`;
+            if (b.sec === 'next') h += `<span class="sv-chip">Up next</span>`;
+            if (b.fav) h += `<span class="sv-chip star">★ Favorite</span>`;
+            b.c.split(' ').filter(Boolean).forEach(c => { h += `<span class="sv-chip">${esc(c)}</span>`; });
+            return h;
+        }
+        function updateMeta() {
+            const b = items[focus];
+            const empty = !b;
+            $('svEmpty').hidden = !empty;
+            $('svMeta').style.display = empty ? 'none' : '';
+            stage.style.display = empty ? 'none' : '';
+            if (empty) return;
+            $('svCounter').textContent = pad(focus) + ' / ' + items.length;
+            $('svTitle').textContent = b.t;
+            $('svAuthor').textContent = b.a;
+            $('svRow').innerHTML = chips(b) + `<button class="sv-inspect" type="button">Inspect ↗</button>`;
+            $('svRow').querySelector('.sv-inspect').addEventListener('click', openInspect);
+            $('svProgress').style.width = (items.length > 1 ? focus / (items.length - 1) * 100 : 100) + '%';
+        }
+        function setFocus(i) {
+            if (!items.length) return;
+            focus = Math.max(0, Math.min(items.length - 1, i));
+            layout(true);
+            updateMeta();
+        }
+        function setBooks(list) {
+            const current = items[focus];
+            if (inspecting) closeInspect();
+            items = list;
+            focus = Math.max(0, list.indexOf(current));
+            layout(true);
+            updateMeta();
+        }
+
+        /* ---------- inspect (pick a book up) ---------- */
+        const orbit = { rx: -4, ry: 24, z: 150, dragging: false, px: 0, py: 0 };
+        function applyOrbit() {
+            const b = items[focus];
+            if (!b) return;
+            const s = scale(), stageW = stage.clientWidth;
+            const cx = window.innerWidth > 700 ? (stageW * 0.34 - stageW / 2) / s : 0;
+            b.node.style.transform =
+                `translateX(${cx}px) translateY(${SHELF_BOTTOM - b.H / 2 - 60}px) translateZ(${orbit.z}px) rotateX(${orbit.rx}deg) rotateY(${orbit.ry}deg)`;
+        }
+        function openInspect() {
+            const b = items[focus];
+            if (inspecting || !b) return;
+            inspecting = true;
+            Object.assign(orbit, { rx: -4, ry: 24, z: 150 });
+            shelfView.classList.add('inspecting');
+            $('svPTitle').textContent = b.t;
+            $('svPAuthor').textContent = b.a;
+            $('svPChips').innerHTML = chips(b);
+            $('svPLink').href = b.link;
+            $('svPLink').textContent = b.link.includes('goodreads') ? 'View on Goodreads ↗' : b.link.includes('amazon') ? 'View on Amazon ↗' : 'Find this book ↗';
+            layout(true);
+            applyOrbit();
+        }
+        function closeInspect() {
+            if (!inspecting) return;
+            inspecting = false;
+            shelfView.classList.remove('inspecting');
+            layout(true);
+        }
+        $('svBack').addEventListener('click', closeInspect);
+
+        /* ---------- pointer: drag to browse, click to open, orbit when inspecting ---------- */
+        let down = null;
+        stage.addEventListener('pointerdown', e => {
+            if (e.target.closest('.sv-nav')) return;
+            down = { x: e.clientX, y: e.clientY, focus, moved: false };
+            if (inspecting) { orbit.dragging = true; orbit.px = e.clientX; orbit.py = e.clientY; }
+            stage.setPointerCapture(e.pointerId);
+        });
+        stage.addEventListener('pointermove', e => {
+            if (!down) return;
+            if (inspecting) {
+                if (!orbit.dragging) return;
+                orbit.ry += (e.clientX - orbit.px) * 0.5;
+                orbit.rx = Math.max(-75, Math.min(75, orbit.rx - (e.clientY - orbit.py) * 0.5));
+                orbit.px = e.clientX; orbit.py = e.clientY;
+                applyOrbit();
+                return;
+            }
+            const dx = e.clientX - down.x;
+            if (!down.moved && Math.abs(dx) > 6) { down.moved = true; stage.classList.add('dragging'); layout(false); }
+            if (down.moved) {
+                const next = Math.max(0, Math.min(items.length - 1, down.focus - Math.round(dx / (DRAG_STEP * scale()))));
+                if (next !== focus) { focus = next; layout(false); updateMeta(); }
+            }
+        });
+        function endDrag(e, cancelled) {
+            if (!down) return;
+            const wasDrag = down.moved;
+            down = null;
+            orbit.dragging = false;
+            if (inspecting) return;
+            stage.classList.remove('dragging');
+            if (wasDrag || cancelled) { layout(true); return; }
+            const hit = document.elementFromPoint(e.clientX, e.clientY);
+            const node = hit && hit.closest('.sv-book');
+            if (!node) return;
+            const idx = items.indexOf(BOOKS[+node.dataset.i]);
+            if (idx === focus) openInspect(); else if (idx >= 0) setFocus(idx);
+        }
+        stage.addEventListener('pointerup', e => endDrag(e, false));
+        stage.addEventListener('pointercancel', e => endDrag(e, true));
+        stage.addEventListener('wheel', e => {
+            if (!inspecting) return;
+            e.preventDefault();
+            orbit.z = Math.max(-40, Math.min(420, orbit.z - e.deltaY * 0.5));
+            applyOrbit();
+        }, { passive: false });
+
+        stage.querySelector('.sv-prev').addEventListener('click', () => setFocus(focus - 1));
+        stage.querySelector('.sv-next').addEventListener('click', () => setFocus(focus + 1));
+        document.addEventListener('keydown', e => {
+            if (!page.classList.contains('view-shelf') || e.target.matches('input, textarea, select')) return;
+            if (e.key === 'Escape') { closeInspect(); return; }
+            if (inspecting) return;
+            if (e.key === 'ArrowLeft') { e.preventDefault(); setFocus(focus - 1); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); setFocus(focus + 1); }
+        });
+        window.addEventListener('resize', () => { if (inspecting) applyOrbit(); });
+
+        /* ---------- follow the grid's filters ---------- */
+        document.querySelectorAll('.filter-btn').forEach(btn =>
+            btn.addEventListener('click', () => setBooks(BOOKS.filter(b => !b.el.classList.contains('hidden')))));
+
+        /* ---------- shelf / grid toggle ---------- */
+        const VIEW_KEY = 'bookshelf-view';
+        function setView(v, persist) {
+            page.classList.toggle('view-shelf', v === 'shelf');
+            page.classList.toggle('view-grid', v === 'grid');
+            document.querySelectorAll('.view-btn').forEach(b => {
+                const on = b.dataset.view === v;
+                b.classList.toggle('active', on);
+                b.setAttribute('aria-selected', on);
+            });
+            if (v === 'grid') closeInspect();
+            if (persist) { try { localStorage.setItem(VIEW_KEY, v); } catch (e) {} }
+        }
+        document.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', () => setView(b.dataset.view, true)));
+
+        let initial = 'shelf';
+        try { initial = localStorage.getItem(VIEW_KEY) || 'shelf'; } catch (e) {}
+        const wanted = new URLSearchParams(location.search).get('view');
+        if (wanted === 'grid' || wanted === 'shelf') initial = wanted;
+
+        setBooks(BOOKS);
+        setView(initial, false);
+    })();
     </script>
 </body>
 </html>
