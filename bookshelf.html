@@ -241,7 +241,6 @@
             touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none;
         }
         .sv-stage.dragging { cursor: grabbing; }
-        .sv-stage.dragging .sv-book { transition: none; }
         .sv.inspecting .sv-stage { touch-action: none; }
         .sv-scene {
             position: absolute; left: 50%; top: 0; width: 0; height: 100%;
@@ -249,7 +248,8 @@
         }
         .sv-shelf, .sv-plank, .sv-book { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
         .sv-shelf { width: 0; height: 100%; }
-        .sv-book { transition: transform 0.55s cubic-bezier(0.22,0.9,0.3,1); will-change: transform; }
+        .sv-book { transition: transform 0.38s cubic-bezier(0.2,0.8,0.2,1); will-change: transform; }
+        .sv-shelf { will-change: transform; }
         .sv-face { position: absolute; left: 50%; top: 50%; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: opacity 0.4s ease; }
         .sv.inspecting .sv-book:not(.lifted) { pointer-events: none; }
         .sv.inspecting .sv-book:not(.lifted) .sv-face { opacity: 0.08; }
@@ -1324,8 +1324,8 @@
                 this.sizePlank();
                 shelvesEl.appendChild(block);
 
-                block.querySelector('.sv-prev').addEventListener('click', () => { active = this; this.setFocus(this.focus - 1, true); });
-                block.querySelector('.sv-next').addEventListener('click', () => { active = this; this.setFocus(this.focus + 1, true); });
+                block.querySelector('.sv-prev').addEventListener('click', () => { active = this; this.setFocus(this.focus - 1); });
+                block.querySelector('.sv-next').addEventListener('click', () => { active = this; this.setFocus(this.focus + 1); });
                 this.bindPointer();
             }
             sizePlank() {
@@ -1337,55 +1337,65 @@
                     face('sv-plank-drop', PW, 34, `translateY(${PLANK_T / 2 + 17}px) translateZ(${PLANK_D / 2}px)`);
             }
             stageWidth() { return (this.stage.clientWidth || Math.min(window.innerWidth - 48, 1200)) / scale(); }
+            focusX() { return this.stageWidth() * (window.innerWidth > 700 ? 0.32 : 0.34); }   // where the open book's centre sits
             measure() {
-                let x = ROW_PAD;
-                this.centers = [];
-                this.items.forEach((b, i) => {
-                    const isFocus = i === this.focus;
-                    if (isFocus) x += FOCUS_PAD;
-                    const w = isFocus ? b.W : b.T;
-                    this.centers.push(x + w / 2);
-                    x += w + GAP;
-                    if (isFocus) x += FOCUS_PAD;
-                });
-                this.rowWidth = x + ROW_PAD;
+                let x = 0;
+                this.centers = this.items.map(b => { const c = x + b.T / 2; x += b.T + GAP; return c; });
             }
-            clamp(o) { return Math.min(0, Math.max(Math.min(0, this.stageWidth() - this.rowWidth), o)); }
-            apply(clampOffset = true) {
-                if (clampOffset) this.offset = this.clamp(this.offset);
-                const sw = this.stageWidth(), hw = sw / 2;
-                const visible = new Set(this.items);
+            spread(i) { const b = this.items[this.focus]; return b ? (b.W - b.T) / 2 + FOCUS_PAD : 0; }
+            restOffset(i) { return this.focusX() - this.centers[i]; }
+            clampOffset(o) {
+                const n = this.items.length;
+                return n ? Math.min(this.restOffset(0), Math.max(this.restOffset(n - 1), o)) : 0;
+            }
+            rubber(o) {
+                const max = this.restOffset(0), min = this.restOffset(this.items.length - 1);
+                if (o > max) return max + (o - max) * 0.35;
+                if (o < min) return min + (o - min) * 0.35;
+                return o;
+            }
+            focusFor(offset) {
+                const x = this.focusX() - offset;
+                let best = 0;
+                this.centers.forEach((c, i) => { if (Math.abs(c - x) < Math.abs(this.centers[best] - x)) best = i; });
+                return best;
+            }
+            // Books only move when the focus changes: the open one spreads its neighbours apart symmetrically.
+            applyBooks() {
+                const visible = new Set(this.items), E = this.spread();
                 this.books.forEach(b => { if (!visible.has(b)) b.node.style.display = 'none'; });
                 this.items.forEach((b, i) => {
                     const isFocus = i === this.focus;
+                    const x = this.centers[i] + (i < this.focus ? -E : i > this.focus ? E : 0);
                     b.node.style.display = '';
                     b.node.classList.remove('lifted');
                     b.node.style.transform =
-                        `translateX(${this.centers[i] + this.offset - hw}px) translateY(${SHELF_Y - b.H / 2}px) translateZ(${isFocus ? 40 : 0}px) rotateY(${isFocus ? 0 : 90}deg)`;
-                    if (this.centers[i] + this.offset > -300 && this.centers[i] + this.offset < sw + 300) loadCover(b);
+                        `translateX(${x}px) translateY(${SHELF_Y - b.H / 2}px) translateZ(${isFocus ? 40 : 0}px) rotateY(${isFocus ? 0 : 90}deg)`;
                 });
+                for (let i = Math.max(0, this.focus - 16); i <= Math.min(this.items.length - 1, this.focus + 16); i++) loadCover(this.items[i]);
             }
-            layout() { this.measure(); this.apply(); }
-            ensureVisible() {
-                const b = this.items[this.focus];
-                if (!b) return;
-                const c = this.centers[this.focus], sw = this.stageWidth();
-                if (c - b.W / 2 + this.offset < 0 || c + b.W / 2 + this.offset > sw) this.offset = this.clamp(sw / 2 - c);
+            applyOffset() { this.shelfEl.style.transform = `translateX(${this.offset - this.stageWidth() / 2}px)`; }
+            layout() { this.measure(); this.applyBooks(); this.applyOffset(); }
+            trackFocus() {
+                const f = this.focusFor(this.offset);
+                if (f !== this.focus) { this.focus = f; this.applyBooks(); this.updateCaption(); }
             }
-            // After a drag or wheel scroll: keep the open book if it is still on screen, otherwise open the one nearest the middle
-            settle() {
-                this.offset = this.clamp(this.offset);
-                const sw = this.stageWidth(), c = this.centers[this.focus] + this.offset;
-                if (this.items.length && (c < 0 || c > sw)) {
-                    const target = sw / 2 - this.offset;
-                    let best = 0;
-                    this.centers.forEach((x, i) => { if (Math.abs(x - target) < Math.abs(this.centers[best] - target)) best = i; });
-                    this.focus = best;
-                    this.measure();
-                }
-                this.stage.classList.remove('dragging');
-                this.apply();
-                this.updateCaption();
+            stopAnim() { cancelAnimationFrame(this.raf); this.raf = 0; }
+            // Ease the row to a resting offset; initial speed matches the hand-off velocity when one is given.
+            animateTo(target, v) {
+                this.stopAnim();
+                const from = this.offset, dist = target - from;
+                const duration = Math.abs(dist) < 1 ? 0 : v ? Math.max(280, Math.min(900, 3 * Math.abs(dist) / Math.max(Math.abs(v), 0.001))) : 420;
+                const t0 = performance.now();
+                const step = now => {
+                    const t = duration ? Math.min(1, (now - t0) / duration) : 1;
+                    const e = 1 - Math.pow(1 - t, 3);
+                    this.offset = from + dist * e;
+                    this.applyOffset();
+                    this.trackFocus();
+                    if (t < 1) this.raf = requestAnimationFrame(step); else this.raf = 0;
+                };
+                this.raf = requestAnimationFrame(step);
             }
             updateCaption() {
                 const b = this.items[this.focus];
@@ -1397,39 +1407,42 @@
                     chips(b) + `<button class="sv-inspect" type="button">Inspect ↗</button>`;
                 this.caption.querySelector('.sv-inspect').addEventListener('click', () => { active = this; this.openInspect(); });
             }
-            setFocus(i, center = false) {
+            setFocus(i) {
                 if (!this.items.length) return;
                 this.focus = Math.max(0, Math.min(this.items.length - 1, i));
-                this.measure();
-                if (center) this.offset = this.clamp(this.stageWidth() / 2 - this.centers[this.focus]);
-                this.ensureVisible();
-                this.apply();
+                this.applyBooks();
                 this.updateCaption();
+                this.animateTo(this.restOffset(this.focus));
             }
             setItems(list) {
                 const current = this.items[this.focus];
                 if (inspecting === this) closeInspect();
+                this.stopAnim();
                 this.items = list;
                 this.focus = Math.max(0, list.indexOf(current));
                 this.block.hidden = !list.length;
                 this.measure();
-                this.ensureVisible();
-                this.apply();
+                this.offset = list.length ? this.restOffset(this.focus) : 0;
+                this.applyBooks();
+                this.applyOffset();
                 this.updateCaption();
             }
             applyOrbit() {
                 const b = this.items[this.focus];
                 if (!b) return;
                 const s = scale(), stageW = this.stage.clientWidth;
-                const cx = window.innerWidth > 700 ? (stageW * 0.34 - stageW / 2) / s : 0;
+                const fromLeft = window.innerWidth > 700 ? stageW * 0.34 / s : stageW / (2 * s);
                 b.node.style.transform =
-                    `translateX(${cx}px) translateY(${STAGE_H / 2}px) translateZ(${orbit.z}px) rotateX(${orbit.rx}deg) rotateY(${orbit.ry}deg)`;
+                    `translateX(${fromLeft - this.offset}px) translateY(${STAGE_H / 2}px) translateZ(${orbit.z}px) rotateX(${orbit.rx}deg) rotateY(${orbit.ry}deg)`;
             }
             openInspect() {
                 const b = this.items[this.focus];
                 if (!b) return;
                 if (inspecting && inspecting !== this) closeInspect();
                 if (inspecting === this) return;
+                this.stopAnim();
+                this.offset = this.restOffset(this.focus);
+                this.applyOffset();
                 inspecting = this;
                 Object.assign(orbit, { rx: -4, ry: 24, z: LIFT_Z });
                 clearTimeout(panelTimer);
@@ -1442,24 +1455,19 @@
                 $('svPChips').innerHTML = chips(b);
                 $('svPLink').href = b.link;
                 $('svPLink').textContent = b.link.includes('goodreads') ? 'View on Goodreads ↗' : b.link.includes('amazon') ? 'View on Amazon ↗' : 'Find this book ↗';
-                this.layout();
+                this.applyBooks();
                 b.node.classList.add('lifted');
                 this.applyOrbit();
             }
             bindPointer() {
                 const stage = this.stage;
                 let down = null;
-                const rubber = raw => {
-                    const min = Math.min(0, this.stageWidth() - this.rowWidth), max = 0;
-                    if (raw > max) return max + (raw - max) * 0.3;
-                    if (raw < min) return min + (raw - min) * 0.3;
-                    return raw;
-                };
                 stage.addEventListener('pointerdown', e => {
                     if (e.target.closest('.sv-nav')) return;
                     if (inspecting && inspecting !== this) closeInspect();
                     active = this;
-                    down = { x: e.clientX, start: this.offset, moved: false, lastX: e.clientX, lastT: performance.now(), v: 0 };
+                    this.stopAnim();
+                    down = { x: e.clientX, start: this.offset, moved: false, samples: [[performance.now(), e.clientX]] };
                     if (inspecting === this) { orbit.dragging = true; orbit.px = e.clientX; orbit.py = e.clientY; }
                     stage.setPointerCapture(e.pointerId);
                 });
@@ -1474,13 +1482,14 @@
                         return;
                     }
                     const s = scale(), dx = (e.clientX - down.x) / s;
-                    if (!down.moved && Math.abs(dx) > 4) { down.moved = true; stage.classList.add('dragging'); }
+                    if (!down.moved && Math.abs(dx) > 3) { down.moved = true; stage.classList.add('dragging'); }
                     if (!down.moved) return;
-                    const now = performance.now(), dt = Math.max(1, now - down.lastT);
-                    down.v = 0.7 * down.v + 0.3 * ((e.clientX - down.lastX) / s / dt);
-                    down.lastX = e.clientX; down.lastT = now;
-                    this.offset = rubber(down.start + dx);
-                    this.apply(false);
+                    const now = performance.now();
+                    down.samples.push([now, e.clientX]);
+                    while (down.samples.length > 2 && now - down.samples[0][0] > 100) down.samples.shift();
+                    this.offset = this.rubber(down.start + dx);
+                    this.applyOffset();
+                    this.trackFocus();
                 });
                 const end = (e, cancelled) => {
                     if (!down) return;
@@ -1488,9 +1497,14 @@
                     down = null;
                     orbit.dragging = false;
                     if (inspecting === this) return;
+                    stage.classList.remove('dragging');
                     if (d.moved || cancelled) {
-                        if (!cancelled) this.offset += d.v * 160;      // glide with the release velocity
-                        this.settle();
+                        // release velocity from the last ~100ms of movement, thrown forward and landed on a book
+                        const [t0, x0] = d.samples[0], [t1, x1] = d.samples[d.samples.length - 1];
+                        const v = cancelled || t1 === t0 ? 0 : (x1 - x0) / scale() / (t1 - t0);
+                        const landing = this.clampOffset(this.offset + v * 180);
+                        const target = this.restOffset(this.focusFor(landing));
+                        this.animateTo(target, v);
                         return;
                     }
                     const hit = document.elementFromPoint(e.clientX, e.clientY);
@@ -1511,11 +1525,12 @@
                     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;      // vertical: let the page scroll
                     e.preventDefault();
                     active = this;
-                    stage.classList.add('dragging');
-                    this.offset = rubber(this.offset - e.deltaX / scale());
-                    this.apply(false);
+                    this.stopAnim();
+                    this.offset = this.rubber(this.offset - e.deltaX / scale());
+                    this.applyOffset();
+                    this.trackFocus();
                     clearTimeout(this.wheelTimer);
-                    this.wheelTimer = setTimeout(() => this.settle(), 140);
+                    this.wheelTimer = setTimeout(() => this.animateTo(this.restOffset(this.focusFor(this.clampOffset(this.offset)))), 120);
                 }, { passive: false });
             }
         }
@@ -1534,7 +1549,7 @@
             inspecting = null;
             sv.classList.remove('inspecting');
             panelTimer = setTimeout(() => { if (!inspecting) panel.classList.remove('open'); }, 450);
-            s.layout();
+            s.applyBooks();
         }
         $('svBack').addEventListener('click', closeInspect);
 
@@ -1551,11 +1566,11 @@
             if (!page.classList.contains('view-shelf') || (t && t.matches && t.matches('input, textarea, select'))) return;
             if (e.key === 'Escape') { closeInspect(); return; }
             if (inspecting || !active) return;
-            if (e.key === 'ArrowLeft') { e.preventDefault(); active.setFocus(active.focus - 1, true); }
-            if (e.key === 'ArrowRight') { e.preventDefault(); active.setFocus(active.focus + 1, true); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); active.setFocus(active.focus - 1); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); active.setFocus(active.focus + 1); }
         });
         window.addEventListener('resize', () => {
-            shelves.forEach(s => s.sizePlank());
+            shelves.forEach(s => { s.sizePlank(); if (s.items.length) { s.stopAnim(); s.offset = s.restOffset(s.focus); s.applyOffset(); } });
             if (inspecting) inspecting.applyOrbit();
         });
 
